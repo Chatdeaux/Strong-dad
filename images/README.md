@@ -7,56 +7,68 @@ Conseil : 600 à 800 px de côté, carré, moins de 150 Ko chacune.
 | Clé | Exercice |
 |---|---|
 | `goblet` | Goblet squat |
-| `pompes` | Pompes (classiques, pieds surélevés, archer) |
-| `swing2` | Swing à deux mains |
+| `pompes` | Push-ups |
+| `swing2` | Two-hand kettlebell swing |
 | `gorilla` | Gorilla row |
-| `press` | Press un bras debout |
-| `planche` | Planche |
-| `rack` | Squat en rack |
+| `press` | Single-arm overhead press |
+| `planche` | Plank |
+| `rack` | Front rack squat |
 | `clean` | Clean kettlebell |
 | `pullthrough` | Pompe avec pull-through |
-| `fente` | Fente arrière (goblet / bulgare) |
+| `fente` | Reverse lunge, goblet |
 | `wallsit` | Wall sit |
-| `stepdown` | Step-down lent |
-| `pont` | Pont fessier |
-| `mollets` | Élévations de mollets |
-| `mobilite` | Mobilité : 90/90, couch stretch, pigeon, cat-cow |
-| `rowtable` | Row penché à deux mains |
+| `stepdown` | Step-down |
+| `pont` | Glute bridge |
+| `mollets` | Calf raises |
+| `mobilite` | Mobilité (10 min) |
+| `rowtable` | Two-hand bent-over row |
 | `renegade` | Renegade row |
-| `curl` | Curl biceps + marteau |
+| `curl` | Kettlebell curl |
 | `suitcase` | Suitcase carry |
 | `hollow` | Hollow hold |
-| `sldl` | Soulevé de terre roumain une jambe |
-| `swing1` | Swing à une main |
-| `floorpress` | Floor press un bras |
-| `pike` | Pompes pike |
-| `dips` | Dips entre deux chaises |
-| `hipthrust` | Hip thrust une jambe |
-| `triceps` | Extension triceps |
+| `sldl` | Single-leg Romanian deadlift |
+| `swing1` | One-arm kettlebell swing |
+| `floorpress` | Single-arm floor press |
+| `pike` | Pike push-ups |
+| `dips` | Chair dips |
+| `hipthrust` | Single-leg hip thrust |
+| `triceps` | Overhead triceps extension |
 | `farmer` | Farmer carry |
-| `finisherhome` | Finisher swings + pompes |
+| `finisherhome` | Finisher : swings + push-ups, 8 min |
+| `chestpress` | Chest press machine, paume ouverte |
+| `machinerow` | Machine row, avant-bras sur coussins |
+| `machineshoulder` | Shoulder press machine |
+| `hipthrustmachine` | Hip thrust machine |
+| `latpullhooks` | Lat pulldown avec crochets |
+| `bike` | Vélo |
+| `deadbug` | Dead bug |
+| `legpress` | Leg press |
+| `legcurl` | Leg curl |
+| `smithhipthrust` | Smith machine hip thrust |
+| `bulgare` | Bulgarian split squat |
+| `backext` | Back extension 45°, bras croisés |
 | `thruster` | Thruster kettlebell |
 | `burpee` | Burpee sans saut |
 | `halo` | Halo kettlebell |
-| `backsquat` | Squat barre |
-| `bench` | Développé couché |
-| `kbswing16` | Swing KB 16 kg |
-| `barbellrow` | Rowing barre |
-| `dbohp` | Développé militaire haltères |
-| `hangingknee` | Relevé de genoux suspendu |
-| `frontsquat` | Squat avant / hack squat |
-| `walkinglunge` | Fentes marchées haltères |
-| `pullup` | Tractions |
-| `dbrow` | Rowing haltère un bras |
-| `barbellcurl` | Curl barre EZ |
-| `farmerdb` | Farmer walk haltères |
-| `rdl` | Soulevé de terre roumain barre |
-| `hipthrustbar` | Hip thrust barre |
-| `inclinedb` | Développé incliné haltères |
-| `lateralraise` | Élévations latérales |
-| `dipsgym` | Dips |
+| `backsquat` | Back squat |
+| `bench` | Bench press |
+| `kbswing16` | Kettlebell swing 16 kg |
+| `barbellrow` | Barbell row |
+| `dbohp` | Dumbbell shoulder press |
+| `hangingknee` | Hanging knee raise |
+| `frontsquat` | Front squat / hack squat |
+| `walkinglunge` | Dumbbell walking lunges |
+| `pullup` | Pull-ups (assistées si besoin) |
+| `dbrow` | One-arm dumbbell row |
+| `barbellcurl` | EZ bar curl |
+| `farmerdb` | Dumbbell farmer walk |
+| `rdl` | Romanian deadlift |
+| `hipthrustbar` | Barbell hip thrust |
+| `inclinedb` | Incline dumbbell press |
+| `lateralraise` | Lateral raises |
+| `dipsgym` | Dips (assistés si besoin) |
 | `facepull` | Face pull |
-| `tricepspush` | Extension triceps poulie |
-| `rower` | Rameur |
-| `wallball` | Wall ball |
+| `tricepspush` | Cable triceps pushdown |
+| `rower` | Finisher : rameur, 30 s fort / 30 s facile |
+| `dbthruster` | Thruster haltères |
 | `sled` | Sled push |
