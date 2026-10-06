@@ -527,7 +527,10 @@ function todayIdx(){ return (new Date().getDay()+6)%7; }
 let view = {tab:'today', week:null, day:null};
 applyFocus();
 function sessionKey(w,id){ return (cycleN()>1?'c'+cycleN()+'-':'')+'w'+w+'-'+id; }
-function isDone(w,id){ return state.sessions.some(s=>s.key===sessionKey(w,id)); }
+function sessOf(w,id){ return state.sessions.find(s=>s.key===sessionKey(w,id)); }
+function isDone(w,id){ return !!sessOf(w,id); }
+function runDone(w,id){ const s=sessOf(w,id); return !!(s && s.run); }
+function exDone(w,id){ const s=sessOf(w,id); return !!(s && s.ex && s.ex.length); }
 
 /* ===================== Rendu ===================== */
 const app = document.getElementById('app');
@@ -573,15 +576,17 @@ function renderToday(){
   const checks = state.checks[sessionKey(w,day.id)] || [];
   if(day.kind==='sets' || day.kind==='recovery'){
     if(day.kind==='recovery'){
-      html += `<div class="card"><h3>Cardio marche / course</h3><p>${esc(expressOn()?day.runExpress:day.run[ph])}</p><p class="note">Sur du plat, chaussures amorties, foulée courte. Le vélo ou le rameur remplacent très bien la course si le genou n'est pas prêt.${gymOn()?' À la salle : 20 à 25 min de vélo ou de rameur à intensité modérée, ou tapis incliné en marche rapide, puis le circuit genou ci-dessous.':''}</p>${isDone(w,day.id)?'<p class="pill ok">course enregistrée ✓</p>':`<button class="btn" id="runGo" style="width:100%;margin-top:6px">Go · course</button>`}</div>`;
-      if(run.done && !isDone(w,day.id)) html += runRecap(day, w);
+      html += `<div class="card"><h3>Cardio marche / course</h3><p>${esc(expressOn()?day.runExpress:day.run[ph])}</p><p class="note">Sur du plat, chaussures amorties, foulée courte. Le vélo ou le rameur remplacent très bien la course si le genou n'est pas prêt.${gymOn()?' À la salle : 20 à 25 min de vélo ou de rameur à intensité modérée, ou tapis incliné en marche rapide, puis le circuit genou ci-dessous.':''}</p>${runDone(w,day.id)?'<p class="pill ok">course enregistrée ✓</p>':`<button class="btn" id="runGo" style="width:100%;margin-top:6px">Go · course</button>`}</div>`;
+      if(run.done && !runDone(w,day.id)) html += runRecap(day, w);
     }
     const deload = (w===4||w===8);
     if(deload && day.kind==='sets') html += `<p class="pill warn">Semaine allégée : une série de moins par exercice</p>`;
     if(noGripOn() && day.kind==='sets') html += `<div class="warnbox"><b>Mode sans grip</b> jusqu'au ${esc(state.noGrip)} : aucun poing fermé sous charge, machines à coussins et jambes. Pansement imperméable, mains lavées après. Une tension dans le doigt = on saute l'exercice.</div>`;
     if(gymOn() && day.kind==='sets') html += `<p class="note">Salle : choisis une charge qui laisse 2 reps en réserve sur la dernière série. Toutes les reps réussies deux séances de suite → +2,5 kg (haut du corps) ou +5 kg (bas du corps). Note ta charge sous chaque exercice.</p>`;
+    const exAlready = day.kind==='recovery' ? exDone(w,day.id) : isDone(w,day.id);
     if(guided.finished && guided.week===w && guided.day===dIdx){ html += renderRecap(day, ph, w); }
-    else html += `<div class="row" style="margin:10px 0"><button class="btn ${day.kind==='recovery'?'ghost':''}" id="goBtn" style="flex:1">${day.kind==='recovery'?'Go · circuit genou (guidé)':'Go · séance guidée'}</button></div>` + `<div class="card">`+activeBlocks(day,ph,w).map(({b0,i})=>{ const b=bx(b0); return `<div class="ex ${checks[i]?'on':''} ${checks[i]===false?'skipped':''}" data-i="${i}"><button class="chk" aria-label="Valider ${esc(b.n)}" data-check="${i}">${checks[i]?'✓':(checks[i]===false?'✕':'')}</button><div><div class="name">${esc(b.n)}</div><div class="rx">${esc(rxShow(b,ph,w,day))}</div><div class="cue">${esc(b.cue)}</div>${hasLoadField(b0,b)?loadField(b.k):(b.k?recoFor(b.k):'')}${(!isDone(w,day.id) && (day.kind==='sets'||day.kind==='recovery'))?fbButtons(i,true,true):''}${b.k?imgTools(b.k):''}</div>${day.kind==='sets'?`<button class="rest" data-rest="${restFor(day,ph)}">Repos ${restFor(day,ph)} s</button>`:'<span></span>'}</div>`; }).join('')+`</div>`;
+    else if(exAlready){ /* circuit déjà enregistré */ }
+    else html += `<div class="row" style="margin:10px 0"><button class="btn ${day.kind==='recovery'?'ghost':''}" id="goBtn" style="flex:1">${day.kind==='recovery'?'Go · circuit genou (guidé)':'Go · séance guidée'}</button></div>` + `<div class="card">`+activeBlocks(day,ph,w).map(({b0,i})=>{ const b=bx(b0); return `<div class="ex ${checks[i]?'on':''} ${checks[i]===false?'skipped':''}" data-i="${i}"><button class="chk" aria-label="Valider ${esc(b.n)}" data-check="${i}">${checks[i]?'✓':(checks[i]===false?'✕':'')}</button><div><div class="name">${esc(b.n)}</div><div class="rx">${esc(rxShow(b,ph,w,day))}</div><div class="cue">${esc(b.cue)}</div>${hasLoadField(b0,b)?loadField(b.k):(b.k?recoFor(b.k):'')}${(!(day.kind==='recovery'?exDone(w,day.id):isDone(w,day.id)) && (day.kind==='sets'||day.kind==='recovery'))?fbButtons(i,true,true):''}${b.k?imgTools(b.k):''}</div>${day.kind==='sets'?`<button class="rest" data-rest="${restFor(day,ph)}">Repos ${restFor(day,ph)} s</button>`:'<span></span>'}</div>`; }).join('')+`</div>`;
   }
   if(noGripOn() && (day.kind==='amrap' || day.kind==='rounds')){
     html += `<div class="warnbox"><b>Séance en pause</b> jusqu'au ${esc(state.noGrip)} : swings, carries et cleans demandent un poing fermé. Remplace par 20 à 30 min de vélo ou de marche en côte, ou repos.</div>`;
@@ -604,16 +609,16 @@ function renderToday(){
     html += `<div class="card"><ul class="plain">${day.list.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
   }
   const allChecked = (day.kind==='sets'||day.kind==='recovery') ? activeBlocks(day,ph,w).every(({i})=>checks[i]===true||checks[i]===false) : (day.kind==='amrap'||day.kind==='rounds') ? big.started : false;
-  if(day.kind!=='rest' && state.start && !isDone(w,day.id) && !(guided.active||guided.finished) && !allChecked){ html += `<p class="note" style="margin:14px 0">Lance la séance guidée, ou coche chaque exercice à la main : la carte « Terminer la séance » apparaît quand tout est fait.</p>`; }
-  if(day.kind!=='rest' && state.start && !isDone(w,day.id) && !(guided.active||guided.finished) && allChecked){
+  const blockDone = day.kind==='recovery' ? exDone(w,day.id) : isDone(w,day.id);
+  if(day.kind!=='rest' && state.start && !blockDone && !(guided.active||guided.finished) && !allChecked){ html += `<p class="note" style="margin:14px 0">Lance la séance guidée, ou coche chaque exercice à la main : la carte « Terminer la séance » apparaît quand tout est fait.</p>`; }
+  if(day.kind!=='rest' && state.start && !blockDone && !(guided.active||guided.finished) && allChecked){
     html += `<div class="card"><h3>Terminer la séance</h3><p class="note">Facile / Ok / Difficile sous chaque exercice pilote la charge de la prochaine fois. Sans réponse, l'exercice est considéré « Ok ».</p><div class="stack">
       <label class="field"><span>Note (facultatif)</span><input type="text" id="snote" placeholder="ex. genou OK, dernière série dure"></label>
       <input type="hidden" id="rpe" value="7"><label class="field"><span>BPM moyen (montre, facultatif)</span><input type="number" id="sbpm" inputmode="numeric" placeholder="ex. 135"></label>
       <button class="btn" id="finishBtn">Enregistrer la séance</button></div></div>`;
   }
-  if(day.kind!=='rest' && isDone(w,day.id)){
-    const s = state.sessions.find(s=>s.key===sessionKey(w,day.id));
-    html += savedCard(s, day);
+  if(day.kind!=='rest' && sessOf(w,day.id)){
+    html += savedCard(sessOf(w,day.id), day);
   }
   app.innerHTML = html;
 
@@ -625,7 +630,9 @@ function renderToday(){
   app.querySelectorAll('[data-rest]').forEach(b=>b.onclick=()=>startRest(+b.dataset.rest));
   const fb=document.getElementById('finishBtn'); if(fb) fb.onclick=()=>{
     const rounds = big.rounds || 0; const durMin = guided.finished ? Math.max(1,Math.round((guided.endedAt-guided.startedAt)/60000)) : undefined;
-    state.sessions.push({key:sessionKey(w,day.id), week:w, day:day.id, place:gymOn()?'gym':'home', date:iso(new Date()), rpe:+document.getElementById('rpe').value, note:document.getElementById('snote').value.trim(), bpm:(parseInt((document.getElementById('sbpm')||{}).value)||undefined), dur:durMin, rounds:rounds||undefined, time: (day.kind==='rounds' && big.elapsed)? big.elapsed : (day.kind==='amrap' && big.started ? big.secs-big.remaining : undefined), score: sessionScore(day, ph, w, rounds, (day.kind==='rounds'&&big.elapsed)?big.elapsed:0)});
+    const existing=sessOf(w,day.id); if(existing){ state.sessions=state.sessions.filter(s=>s!==existing); }
+    state.sessions.push(Object.assign({}, existing||{}, {key:sessionKey(w,day.id), week:w, day:day.id, place:gymOn()?'gym':'home', date:iso(new Date()), rpe:+document.getElementById('rpe').value, note:document.getElementById('snote').value.trim(), bpm:(parseInt((document.getElementById('sbpm')||{}).value)||undefined), dur:durMin, rounds:rounds||undefined, time: (day.kind==='rounds' && big.elapsed)? big.elapsed : (day.kind==='amrap' && big.started ? big.secs-big.remaining : undefined), score: sessionScore(day, ph, w, rounds, (day.kind==='rounds'&&big.elapsed)?big.elapsed:0)}));
+    if(existing && existing.dur && durMin){ state.sessions[state.sessions.length-1].dur = existing.dur + durMin; }
     const rpeV=+document.getElementById('rpe').value; state.lastRpe=state.lastRpe||{}; state.loadLog=state.loadLog||{}; const FBR={easy:5,ok:7,hard:9}; const exList=[];
     if(day.kind==='sets'||day.kind==='recovery'){ activeBlocks(day,ph,w).forEach(({b0,i})=>{ const b=bx(b0); const chk=(state.checks[sessionKey(w,day.id)]||[])[i]; if(chk===false){ exList.push({k:b.k, n:b.n, sets:0, load:null, fb:'skip', next:null}); return; } const fb=(guided.active||guided.finished)?(guided.fb||{})[i]:(((state.fbs||{})[sessionKey(w,day.id)]||{})[i]); const r = fb?FBR[fb]:7; const hasLoad=(hasLoadField(b0,b)&&state.loads&&state.loads[b.k]!=null); state.lastRpe[b.k]={rpe:r, load:hasLoad?state.loads[b.k]:null, date:iso(new Date()), fb:fb||null}; if(hasLoad){ (state.loadLog[b.k]=state.loadLog[b.k]||[]).push({d:iso(new Date()), w:w, load:state.loads[b.k], fb:fb||null}); } const sets=guided.finished? guided.seq.filter((x,idx)=>x.t==='work'&&x.i===i&&guided.done.has(idx)).length : setsFor(b,ph,w,day); exList.push({k:b.k, n:b.n, sets, load:hasLoad?state.loads[b.k]:null, fb:fb||null, next:nextReco(b.k)}); }); }
     const sess=state.sessions[state.sessions.length-1]; sess.ex=exList; const fbsAll=exList.filter(e=>e.fb); if(fbsAll.length) sess.rpe=Math.round(fbsAll.reduce((t,e)=>t+FBR[e.fb],0)/fbsAll.length);
@@ -636,7 +643,8 @@ function renderToday(){
   big.day=day; big.ph=ph; bindBig(); bindImages(app); bindGuided(); bindPlace(app);
   const rg=document.getElementById('runGo'); if(rg) rg.onclick=()=>showPrep(day, ph, w, ()=>runStart(day, ph, w));
   const rs=document.getElementById('runSave'); if(rs) rs.onclick=()=>{ const km=parseFloat(document.getElementById('runKm').value)||null; const bpm=parseInt(document.getElementById('runBpm').value)||null; const knee=+document.getElementById('runKnee').value; const note=document.getElementById('runNote').value.trim(); const mins=Math.round(run.elapsed/60*10)/10;
-    state.sessions.push({key:sessionKey(w,day.id), week:w, day:day.id, date:iso(new Date()), rpe:knee, note:note, dur:Math.round(mins), kind:'run', run:{min:mins, km, bpm, knee}, score: km? Math.round(km*100)/100 : mins, place:'home'});
+    const ex0=sessOf(w,day.id); if(ex0){ state.sessions=state.sessions.filter(s=>s!==ex0); }
+    state.sessions.push(Object.assign({}, ex0||{}, {key:sessionKey(w,day.id), week:w, day:day.id, date:iso(new Date()), rpe:knee, note:note||(ex0&&ex0.note)||'', dur:Math.round(mins)+((ex0&&ex0.dur)||0), run:{min:mins, km, bpm, knee}, score: km? Math.round(km*100)/100 : mins, place:'home'}));
     state.runs=state.runs||[]; state.runs.push({d:iso(new Date()), w, min:mins, km, bpm, knee}); run.done=false; persist(); toast('Course enregistrée'); renderToday(); };
   const rd=document.getElementById('runDiscard'); if(rd) rd.onclick=()=>{ if(confirm('Abandonner cette course ?')){ run.done=false; renderToday(); } };
   const gb=document.getElementById('goBtn'); if(gb) gb.onclick=()=>showPrep(day, ph, w, ()=>startGuided(day, ph, w, dIdx));
@@ -661,9 +669,10 @@ const FBL={skip:'Pas fait',easy:'Facile',ok:'Ok',hard:'Difficile'};
 function savedCard(s, day){
   const ex=s.ex||[]; const fbs=ex.filter(e=>e.fb); const score=fbs.length? (fbs.reduce((t,e)=>t+({easy:1,ok:2,hard:3}[e.fb]),0)/fbs.length) : null;
   const mood = score==null?'':(score<1.5?'globalement facile → on monte':score>2.5?'globalement difficile → on consolide':'bien calibré');
-  const rows = ex.map(e=>{ const nxt = e.next ? `<span class="reco ${e.next.cls}">→ ${esc(e.next.txt)}</span>` : ''; return `<tr><td>${esc(e.n)}</td><td>${e.sets!=null?e.sets+'×':''}${e.load!=null?' '+e.load+' kg':''}</td><td>${e.fb?FBL[e.fb]:'–'}</td><td>${nxt}</td></tr>`; }).join('');
+  const runRow = s.run ? `<tr><td>Course ✓</td><td>${s.run.min} min${s.run.km?' · '+s.run.km+' km':''}</td><td>${s.run.bpm?s.run.bpm+' bpm':'–'}</td><td>${s.run.km?fmt(s.run.min*60/s.run.km)+'/km':''}</td></tr>` : '';
+  const rows = runRow + ex.map(e=>{ const nxt = e.next ? `<span class="reco ${e.next.cls}">→ ${esc(e.next.txt)}</span>` : ''; return `<tr><td>${esc(e.n)}</td><td>${e.sets!=null?e.sets+'×':''}${e.load!=null?' '+e.load+' kg':''}</td><td>${e.fb?FBL[e.fb]:'–'}</td><td>${nxt}</td></tr>`; }).join('');
   return `<div class="card recap" id="savedCard"><div class="lbl meta">${esc(day.name)} · ${esc(s.date)}</div><h3 class="display" style="font-size:28px">Séance enregistrée</h3><div class="pills">${s.dur?`<span class="pill">${s.dur} min</span>`:''}${s.rounds?`<span class="pill">${s.rounds} tours</span>`:''}${s.time?`<span class="pill">${fmt(s.time)}</span>`:''}${s.bpm?`<span class="pill">${s.bpm} bpm</span>`:''}${mood?`<span class="pill">${mood}</span>`:''}</div>
-  ${ex.length?`<div class="tablewrap" style="margin-top:10px"><table><tr><th>Exercice</th><th>Fait</th><th>Ressenti</th><th>Prochaine fois</th></tr>${rows}</table></div><p class="note" style="margin-top:8px">✓ Pris en compte : ces recommandations s\'afficheront automatiquement à la prochaine séance.</p>`:''}
+  ${(ex.length||s.run)?`<div class="tablewrap" style="margin-top:10px"><table><tr><th>Exercice</th><th>Fait</th><th>Ressenti</th><th>Prochaine fois</th></tr>${rows}</table></div><p class="note" style="margin-top:8px">✓ Pris en compte : ces recommandations s\'afficheront automatiquement à la prochaine séance.</p>`:''}
   ${s.note?`<p class="note">${esc(s.note)}</p>`:''}
   <div class="row" style="margin-top:10px"><button class="btn small" id="shareBtn">Partager le récap</button><button class="btn ghost small" id="undoBtn">Annuler l\'enregistrement</button></div></div>`;
 }
