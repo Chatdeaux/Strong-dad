@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Strong Dad - Programme personnalisé</title>
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0D2A6B">
@@ -31,8 +31,8 @@
   --bg:#181B1A; --surface:#222624; --ink:#EEF1EE; --ink-2:#A2ABA6; --line:#343A37;
   --accent:#5A9BE8; --accent-ink:#06142E; --soft:#182A4A; --warn:#F0955C; --ok:#5FCB8E; --ok-soft:#1E3A2B;
 }
-html{scroll-padding-top:env(safe-area-inset-top,0px);overflow-x:clip;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{overflow-x:clip;max-width:100vw}
+html{scroll-padding-top:env(safe-area-inset-top,0px);overflow-x:clip;overscroll-behavior-y:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:clip;max-width:100vw;overscroll-behavior-y:none;min-height:100.5vh}
 main{min-width:0}
 *,*::before,*::after{box-sizing:inherit}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.5;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px));}
@@ -112,7 +112,7 @@ th{color:var(--ink-2);font-weight:600;border-top:0}
 .field span{color:var(--ink-2)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 svg.chart{width:100%;height:120px;display:block}
-.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));z-index:5}
+.tabs{position:fixed;left:0;right:0;bottom:0;transform:translateZ(0);will-change:transform;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));z-index:5}
 .tabs button{flex:1;display:grid;justify-items:center;gap:3px;font-size:11px;font-weight:600;color:var(--ink-2);padding:6px 4px;border-radius:10px;letter-spacing:.01em}
 .tabs button[aria-current="page"]{color:var(--accent)}
 .tabs svg{width:22px;height:22px}
@@ -224,6 +224,9 @@ body.locked{position:fixed;left:0;right:0;overflow:hidden}
 .gf-actions .small-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .gf-actions .small-row .btn{min-height:42px;font-size:14px}
 .gf .timerbox{margin-top:14px}
+.gf .remain{text-align:left;margin:6px auto 0;padding:0 0 0 20px;max-width:36ch;color:var(--ink-2);font-size:13.5px}
+.gf .remain li{margin:4px 0}
+.gf .nextcard .how{margin:8px 0 0;max-width:none}
 .gf .circlist{text-align:left;margin:18px auto 0;padding:0 0 0 22px;max-width:36ch;color:var(--ink-2);font-size:15px}
 .gf .circlist li{margin:6px 0;padding-left:4px}
 .gf .circlist li.cur{color:var(--ink);font-weight:800;font-size:17px}
@@ -302,7 +305,7 @@ const PHASES = [
   {name:'Construction', weeks:'Semaines 5–8', goal:'Plus de volume, travail unilatéral, moins de repos. C\'est ici que le muscle se construit.'},
   {name:'Performance', weeks:'Semaines 9–12', goal:'Variantes plus dures, complexes kettlebell, AMRAP longs. Le physique devient athlétique.'}
 ];
-const WARMUP = ['2 min de marche sur place ou step jacks (sans saut)','10 cercles de hanches par côté, 10 cercles d\'épaules','10 hip hinge à vide (mains sur les hanches, dos plat)','10 squats à vide, descente lente','10 halos avec la kettlebell dans chaque sens','10 swings légers pour se régler'];
+const WARMUP = ['2 min de marche sur place ou step jacks (sans saut)','Rotation thoracique à quatre pattes (main derrière la tête, coude vers le plafond) : 8 par côté','90/90 hanches : 6 bascules lentes d\'un côté à l\'autre','Fente basse avec rotation vers le genou avant : 6 par côté','10 hip hinge à vide, 10 squats à vide','10 halos avec la kettlebell dans chaque sens'];
 
 const LIB = [
  ['goblet','Goblet squat'],['pompes','Push-ups'],['swing2','Two-hand kettlebell swing'],['gorilla','Gorilla row'],['press','Single-arm overhead press'],['planche','Plank'],
@@ -310,11 +313,12 @@ const LIB = [
  ['wallsit','Wall sit'],['stepdown','Step-down'],['pont','Glute bridge'],['mollets','Calf raises'],['mobilite','Mobilité (10 min)'],
  ['rowtable','Two-hand bent-over row'],['renegade','Renegade row'],['curl','Kettlebell curl'],['suitcase','Suitcase carry'],['hollow','Hollow hold'],
  ['sldl','Single-leg Romanian deadlift'],['swing1','One-arm kettlebell swing'],['floorpress','Single-arm floor press'],['pike','Pike push-ups'],['dips','Chair dips'],['hipthrust','Single-leg hip thrust'],['triceps','Overhead triceps extension'],
- ['farmer','Farmer carry'],['finisherhome','Finisher : swings + push-ups, 8 min'],['chestpress','Chest press machine, paume ouverte'],['machinerow','Machine row, avant-bras sur coussins'],['machineshoulder','Shoulder press machine'],['hipthrustmachine','Hip thrust machine'],['latpullhooks','Lat pulldown avec crochets'],['bike','Vélo'],['deadbug','Dead bug'],['legpress','Leg press'],['legcurl','Leg curl'],['smithhipthrust','Smith machine hip thrust'],['bulgare','Bulgarian split squat'],['backext','Back extension 45°, bras croisés'],['thruster','Thruster kettlebell'],['burpee','Burpee sans saut'],['halo','Halo kettlebell'],
- ['backsquat','Back squat'],['bench','Bench press'],['kbswing16','Kettlebell swing 16 kg'],['barbellrow','Barbell row'],['dbohp','Dumbbell shoulder press'],['hangingknee','Hanging knee raise'],['frontsquat','Front squat / hack squat'],['walkinglunge','Dumbbell walking lunges'],['pullup','Pull-ups (assistées si besoin)'],['dbrow','One-arm dumbbell row'],['barbellcurl','EZ bar curl'],['farmerdb','Dumbbell farmer walk'],['rdl','Romanian deadlift'],['hipthrustbar','Barbell hip thrust'],['inclinedb','Incline dumbbell press'],['lateralraise','Lateral raises'],['dipsgym','Dips (assistés si besoin)'],['facepull','Face pull'],['tricepspush','Cable triceps pushdown'],['rower','Finisher : rameur, 30 s fort / 30 s facile'],['dbthruster','Dumbbell thruster'],['tgu','Turkish get-up'],['popup','Pop-ups'],['pallof','Pallof press'],['scappush','Scapular push-ups + Y-T-W'],['russtwist','Russian twist'],['sled','Sled push']
+ ['farmer','Farmer carry'],['finisherhome','Finisher : swings + push-ups, 8 min'],['chestpress','Chest press machine, paume ouverte'],['machinerow','Machine row, avant-bras sur coussins'],['machineshoulder','Shoulder press machine'],['hipthrustmachine','Hip thrust machine'],['latpullhooks','Lat pulldown avec crochets'],['bike','Elliptique / vélo'],['deadbug','Dead bug'],['legpress','Leg press'],['legcurl','Leg curl'],['smithhipthrust','Smith machine hip thrust'],['bulgare','Bulgarian split squat'],['backext','Back extension 45°, bras croisés'],['thruster','Thruster kettlebell'],['burpee','Burpee sans saut'],['halo','Halo kettlebell'],
+ ['backsquat','Back squat'],['bench','Bench press'],['kbswing16','Kettlebell swing 16 kg'],['barbellrow','Barbell row'],['dbohp','Dumbbell shoulder press'],['hangingknee','Hanging knee raise'],['frontsquat','Front squat / hack squat'],['walkinglunge','Dumbbell walking lunges'],['pullup','Pull-ups (assistées si besoin)'],['dbrow','One-arm dumbbell row'],['barbellcurl','EZ bar curl'],['farmerdb','Dumbbell farmer walk'],['rdl','Romanian deadlift'],['hipthrustbar','Barbell hip thrust'],['inclinedb','Incline dumbbell press'],['lateralraise','Lateral raises'],['dipsgym','Dips (assistés si besoin)'],['facepull','Face pull'],['tricepspush','Cable triceps pushdown'],['rower','Rameur'],['dbthruster','Dumbbell thruster'],['tgu','Turkish get-up'],['popup','Pop-ups'],['pallof','Pallof press'],['scappush','Scapular push-ups + Y-T-W'],['russtwist','Russian twist'],['sled','Sled push'],
+ ['battlerope','Battle ropes'],['skierg','SkiErg'],['finisherhinge','Finisher swings 20/40']
 ];
 const LIBMAP = Object.fromEntries(LIB);
-const CUES = {swing2:'Projection de hanches, bras relâchés, fessiers serrés en haut. KB à hauteur de poitrine max.', goblet:'KB contre la poitrine, coudes entre les genoux, talons au sol.', pompes:'Corps rigide, coudes à 45°, poitrine au sol.', gorilla:'Dos plat, une KB au sol, tire le coude vers la hanche.', rack:'KB posée sur l\'avant-bras contre l\'épaule, reste vertical, descends en squat.', press:'Depuis le rack, pousse la KB au-dessus de la tête, fessiers serrés, pas de cambrure.', pullthrough:'Position de pompe, fais une pompe puis passe la KB d\'une main à l\'autre sous ton corps.', clean:'Comme un swing court : la KB monte le long du corps et se pose dans le rack sans taper l\'avant-bras.', fente:'Pas en arrière, genou avant au-dessus de la cheville, buste droit.', farmer:'KB dans une main, épaules basses, marche droit sans pencher.', burpee:'Descends en pompe, reviens en squat, relève-toi sans sauter.', thruster:'Goblet squat, puis pousse la KB au-dessus de la tête en te relevant.', halo:'KB par les cornes, tourne autour de la tête, coudes près des oreilles.', rower:'Jambes, puis dos, puis bras. Retour dans l\'ordre inverse. Vise 2:10 à 2:30 par 500 m.', kbswing16:'Même swing, KB plus lourde : hanches, pas les bras.', dbthruster:'Deux haltères aux épaules (8 à 12 kg chacun), squat profond, et en te relevant pousse-les au-dessus de la tête dans le même élan. Jambes, épaules et cardio dans un seul mouvement.', farmerdb:'Un haltère lourd de chaque côté, épaules basses, marche droit.', sled:'Bras tendus ou pliés, pousse avec les jambes, petits pas rapides.'};
+const CUES = {swing2:'Projection de hanches, bras relâchés, fessiers serrés en haut. KB à hauteur de poitrine max.', goblet:'KB contre la poitrine, coudes entre les genoux, talons au sol.', pompes:'Corps rigide, coudes à 45°, poitrine au sol.', gorilla:'Dos plat, une KB au sol, tire le coude vers la hanche.', rack:'KB posée sur l\'avant-bras contre l\'épaule, reste vertical, descends en squat.', press:'Depuis le rack, pousse la KB au-dessus de la tête, fessiers serrés, pas de cambrure.', pullthrough:'Position de pompe, fais une pompe puis passe la KB d\'une main à l\'autre sous ton corps.', clean:'Comme un swing court : la KB monte le long du corps et se pose dans le rack sans taper l\'avant-bras.', fente:'Pas en arrière, genou avant au-dessus de la cheville, buste droit.', farmer:'KB dans une main, épaules basses, marche droit sans pencher.', burpee:'Descends en pompe, reviens en squat, relève-toi sans sauter.', thruster:'Goblet squat, puis pousse la KB au-dessus de la tête en te relevant.', halo:'KB par les cornes, tourne autour de la tête, coudes près des oreilles.', rower:'Jambes, puis dos, puis bras. Retour dans l\'ordre inverse. Vise 2:10 à 2:30 par 500 m.', battlerope:'Genoux fléchis, tronc gainé, vagues alternées rapides : la puissance vient des hanches, pas des épaules.', skierg:'Bras tendus en haut, charnière de hanche, tire les poignées vers les cuisses. Les abdos et les lats font le travail.', kbswing16:'Même swing, KB plus lourde : hanches, pas les bras.', dbthruster:'Deux haltères aux épaules (8 à 12 kg chacun), squat profond, et en te relevant pousse-les au-dessus de la tête dans le même élan. Jambes, épaules et cardio dans un seul mouvement.', farmerdb:'Un haltère lourd de chaque côté, épaules basses, marche droit.', sled:'Bras tendus ou pliés, pousse avec les jambes, petits pas rapides.'};
 function itemHtml(txt,k){ const s=k?imgSrc(k):null; return `<li><div class="itemrow">${s?`<img class="mini" src="${s}" alt="" data-view="${k}" onerror="this.remove()">`:''}<div><div>${esc(txt)}</div>${k&&CUES[k]?`<div class="cue">${esc(CUES[k])}</div>`:''}</div></div></li>`; }
 const DAYS = [
  {id:'lun', name:'Lundi', title:'Force full body', kind:'sets', rest:90, placeDefault:'gym',
@@ -362,21 +366,23 @@ const DAYS = [
    {k:'rowtable', ng:{k:'latpullhooks', n:'Lat pulldown avec crochets', p:['3 × 12','3 × 12','3 × 12'], cue:'Crochets autour de la barre, mains ouvertes. Tire les coudes vers le bas.'}, g:{k:'pullup', n:'Pull-ups (assistées si besoin)', p:['4 × 6, assistance réglée pour finir juste','4 × 8','4 × max sans assistance'], cue:'Poitrine vers la barre, descends complètement. Réduis l\'assistance chaque semaine.'}, n:'Two-hand bent-over row', p:['4 × 12, 2 s de pause en haut','4 × 15, pause 2 s en haut','5 × 15, descente en 3 s'], cue:'Buste à 45°, dos plat, tire la KB vers le nombril et serre les omoplates. 12 kg est léger ici : la pause et la lenteur font le travail.'},
    {k:'pike', ng:{k:'lateralraise', n:'Lateral raises', p:['3 × 15','3 × 15','3 × 15'], cue:'Haltères de 2 à 4 kg posés dans la paume, sans serrer. Si ça tire : on saute.'}, g:{k:'lateralraise', n:'Lateral raises', p:['3 × 15','3 × 15','4 × 15'], cue:'Légèrement penché en avant, coudes un peu pliés, monte jusqu\'à l\'horizontale.'}, n:'Pike push-ups', p:['3 × 8','3 × 12','3 × 10, pieds surélevés'], cue:'Hanches hautes, la tête descend entre les mains.'},
    {k:'renegade', ng:{k:'machinerow', n:'Machine row, avant-bras sur coussins', p:['3 × 12','3 × 12','3 × 12'], cue:'Avant-bras sur les coussins, mains ouvertes.'}, g:{k:'dbrow', n:'One-arm dumbbell row', p:['4 × 10 par bras','4 × 12 par bras','4 × 8 lourd par bras'], cue:'Genou et main sur le banc, tire le coude vers la hanche, pause 1 s en haut.'}, n:'Renegade row', p:['3 × 6 par bras','3 × 8 par bras','4 × 10 par bras'], cue:'Pieds écartés, hanches immobiles. Tirage + gainage.'},
-   {k:'dips', ng:{k:'bike', n:'Vélo', p:['5 min','5 min','5 min'], cue:'Remplace les dips le temps de la cicatrisation.'}, g:{k:'dipsgym', n:'Dips (assistés si besoin)', p:['3 × 8','3 × 12','4 × 10 lestés'], cue:'Buste légèrement penché, descends jusqu\'à 90° au coude.'}, n:'Chair dips', p:['3 × 8','3 × 12','4 × 15'], cue:'Chaises stables ! Épaules basses.'},
+   {k:'dips', ng:{k:'bike', n:'Elliptique 5 min, allure modérée', p:['5 min','5 min','5 min'], cue:'Mains posées sans serrer, ou bras le long du corps. Remplace les dips le temps de la cicatrisation.'}, g:{k:'dipsgym', n:'Dips (assistés si besoin)', p:['3 × 8','3 × 12','4 × 10 lestés'], cue:'Buste légèrement penché, descends jusqu\'à 90° au coude.'}, n:'Chair dips', p:['3 × 8','3 × 12','4 × 15'], cue:'Chaises stables ! Épaules basses.'},
    {k:'hipthrust', ng:{k:'deadbug', n:'Dead bug', p:['3 × 10 par côté','3 × 12 par côté','3 × 12 par côté'], cue:'Dos collé au sol, bras et jambe opposés s\'éloignent lentement.'}, g:{k:'facepull', n:'Face pull', p:['3 × 15','3 × 15','4 × 15'], cue:'Corde à hauteur du visage, tire vers les oreilles, coudes hauts. Santé des épaules.'}, n:'Single-leg hip thrust', p:['3 × 12 par jambe','3 × 15 par jambe','3 × 12 par jambe, KB sur la hanche'], cue:'Menton rentré, tiens 1 s en haut.'},
-   {k:'triceps', ng:{k:'hollow', ng:{k:'hollow', n:'Hollow hold', p:['3 × 20 s','3 × 30 s','3 × 40 s'], cue:'Bas du dos collé au sol.'}, n:'Overhead triceps extension', p:['3 × 20 s','3 × 30 s','3 × 40 s'], cue:'Bas du dos collé au sol.'}, g:{k:'tricepspush', n:'Cable triceps pushdown', p:['3 × 12','3 × 15','4 × 12'], cue:'Coudes collés au corps, tends complètement.'}, n:'Extension triceps au-dessus de la tête', p:['3 × 12','3 × 15','4 × 15'], cue:'Coudes serrés, KB tenue par les cornes.'},
-   {k:'finisherhome', ng:{k:'bike', n:'Finisher : vélo, 30 s fort / 30 s facile', p:['6 tours','8 tours','10 tours'], iv:{on:30,off:30}, cue:'Mains posées, pas serrées.'}, n:'Finisher : swings + push-ups, 8 min', p:['6 min','8 min','10 min'], cue:'Rythme régulier, note le nombre de tours.', g:{k:'rower', n:'Finisher : rameur, 30 s fort / 30 s facile', p:['6 tours','8 tours','10 tours'], iv:{on:30,off:30}, cue:'Jambes, dos, bras. Vise la même distance à chaque intervalle fort.'}}
+   {k:'triceps', ng:{k:'hollow', n:'Hollow hold', p:['3 × 20 s','3 × 30 s','3 × 40 s'], cue:'Bas du dos collé au sol.'}, g:{k:'tricepspush', n:'Cable triceps pushdown', p:['3 × 12','3 × 15','4 × 12'], cue:'Coudes collés au corps, tends complètement.'}, n:'Overhead triceps extension', p:['3 × 12','3 × 15','4 × 15'], cue:'Coudes serrés, KB tenue par les cornes.'},
+   {k:'finisherhome', ng:{k:'bike', n:'Finisher : elliptique, 30 s fort / 30 s facile', p:['6 tours','8 tours','10 tours'], iv:{on:30,off:30}, cue:'Mains posées sans serrer. Monte la résistance sur les 30 s fortes.'}, n:'Finisher : swings + push-ups, 8 min', p:['6 min','8 min','10 min'], cue:'Rythme régulier, note le nombre de tours.', g:{k:'battlerope', n:'Finisher : battle ropes (ou rameur)', p:['6 tours · 20 s fort / 40 s facile','8 tours · 30 s fort / 30 s facile','10 tours · 30 s fort / 30 s facile'], iv:[{on:20,off:40},{on:30,off:30},{on:30,off:30}], cue:'Vagues alternées, genoux fléchis, tronc gainé, les bras travaillent mais la puissance vient des hanches. Alterne les vagues alternées, les slams à deux bras et les cercles. Rameur si les ropes sont prises.'}}
   ]},
  {id:'jeu', name:'Jeudi', title:'Jambes & charnière', kind:'sets', rest:90, placeDefault:'gym',
   intro:'Troisième jour de salle : squat, soulevé de terre roumain, hip thrust, fentes. La séance la plus payante pour un physique athlétique.',
   blocks:[
+   {k:'popup', ng:{k:'deadbug', n:'Dead bug', p:['3 × 10 par côté','3 × 12 par côté','3 × 12 par côté'], cue:'Remplace les pop-ups le temps de la cicatrisation (appui sur les mains).'}, g:{k:'popup', n:'Pop-ups (take-off surf)', p:['3 × 6','3 × 8','4 × 8, plus vite'], cue:'Allongé sur le ventre, mains sous les épaules : pousse fort, ramène les pieds sous toi d\'un coup et atterris en position de surf, un pied devant. Alterne le pied avant. Explosif, frais, en premier.'}, n:'Pop-ups (take-off surf)', p:['3 × 6','3 × 8','4 × 8, plus vite'], cue:'Allongé sur le ventre, mains sous les épaules : pousse fort, ramène les pieds sous toi d\'un coup et atterris en position de surf, un pied devant. Alterne le pied avant.'},
    {k:'rack', ng:{k:'legpress', n:'Leg press', p:['4 × 10','4 × 12','4 × 12'], cue:'Pieds hauts sur le plateau pour les fessiers et ischios.'}, g:{k:'frontsquat', n:'Front squat / hack squat', p:['4 × 8','4 × 10','4 × 8 lourd'], cue:'Barre sur les clavicules, coudes hauts, buste vertical. Hack squat si l\'équilibre gêne.'}, n:'Front rack squat', p:['4 × 8 par côté','4 × 10 par côté','4 × 12 par côté'], cue:'La charge décalée force le tronc à travailler. Reste vertical.'},
    {k:'sldl', ng:{k:'legcurl', n:'Leg curl', p:['3 × 12','4 × 12','4 × 12'], cue:'Hanches collées au banc, descente contrôlée.'}, g:{k:'rdl', n:'Romanian deadlift', p:['4 × 8','4 × 10','4 × 8 lourd'], cue:'Barre collée aux cuisses, hanches en arrière, dos plat, jusqu\'à sentir les ischios. Genoux légèrement fléchis.'}, n:'Single-leg Romanian deadlift', p:['3 × 8 par jambe, une main sur un appui','4 × 10 par jambe','4 × 12 par jambe, sans appui'], cue:'Hanche qui recule, dos plat, genou d\'appui légèrement fléchi. Stabilité du genou + ischios + fessiers.'},
    {k:'swing1', ng:{k:'smithhipthrust', n:'Smith machine hip thrust', p:['3 × 12','4 × 12','4 × 12'], cue:'Barre guidée sur les hanches avec protection, les mains stabilisent sans serrer.'}, g:{k:'hipthrustbar', n:'Barbell hip thrust', p:['4 × 10','4 × 12','4 × 10 lourd'], cue:'Dos sur un banc, barre sur les hanches, menton rentré, serre fort en haut 1 s.'}, n:'One-arm kettlebell swing', p:['4 × 10 par bras','4 × 15 par bras','5 × 20 par bras'], cue:'Épaule packée, la KB ne monte pas plus haut que la poitrine.'},
    {k:'fente', ng:{k:'bulgare', n:'Bulgarian split squat', p:['3 × 10 par jambe','3 × 12 par jambe','3 × 12 par jambe'], cue:'Descente en 3 s, pied arrière sur un banc.'}, g:{k:'walkinglunge', n:'Dumbbell walking lunges', p:['3 × 8 par jambe','3 × 10 par jambe','3 × 12 par jambe'], cue:'Grands pas, genou arrière frôle le sol. Pas en arrière si le genou gêne.'}, n:'Reverse lunge, goblet', p:['3 × 8 par jambe','3 × 12 par jambe','4 × 12 par jambe (bulgare si le genou est OK)'], cue:'Le pas en arrière est plus doux pour le genou que le pas en avant. Genou avant au-dessus de la cheville.'},
    {k:'suitcase', ng:{k:'mollets', n:'Calf raises', p:['3 × 15','3 × 20','3 × 20'], cue:'Lentement, amplitude complète.'}, g:{k:'farmerdb', n:'Dumbbell farmer walk', p:['3 × 30 m','3 × 40 m','3 × 40 m plus lourd'], cue:'Un haltère de chaque côté, le plus lourd possible en marchant droit.'}, n:'Suitcase carry', p:['3 × 30 m par côté','3 × 40 m par côté','3 × 50 m par côté'], cue:'Ne penche pas. Obliques et grip.'},
    {k:'curl', ng:{k:'backext', n:'Back extension 45°, bras croisés', p:['3 × 12','3 × 15','3 × 15'], cue:'Bras croisés sur la poitrine, monte jusqu\'à l\'alignement, pas plus.'}, g:{k:'barbellcurl', n:'EZ bar curl', p:['3 × 12','3 × 15','4 × 10'], cue:'Coudes fixes, descente lente.'}, n:'Kettlebell curl', p:['3 × 12','3 × 15','4 × 15'], cue:'KB tenue par les cornes. Lent sur la descente.'},
-   {k:'hollow', n:'Hollow hold', p:['3 × 20 s','3 × 30 s','3 × 40 s'], cue:'Bas du dos collé au sol.'}
+   {k:'hollow', n:'Hollow hold', p:['3 × 20 s','3 × 30 s','3 × 40 s'], cue:'Bas du dos collé au sol.'},
+   {k:'finisherhinge', ng:{k:'bike', n:'Finisher : elliptique, 30 s fort / 30 s facile', p:['6 tours','8 tours','10 tours'], iv:{on:30,off:30}, cue:'Mains posées sans serrer.'}, g:{k:'skierg', n:'Finisher : SkiErg, 30 s fort / 30 s facile', p:['6 tours','8 tours','10 tours'], iv:{on:30,off:30}, cue:'Le SkiErg est une charnière de hanche : bras tendus en haut, puis tu plies les hanches et tu tires les poignées vers les cuisses en gainant. Vise la même distance à chaque intervalle fort.'}, n:'Finisher : swings 20 s / repos 40 s', p:['6 tours','8 tours','10 tours'], iv:{on:20,off:40}, cue:'Swings à deux mains pendant 20 s, repos 40 s. La charnière de hanche jusqu\'au bout.'}
   ]},
  {id:'ven', name:'Vendredi', title:'KB conditioning · bonus', opt:true, kind:'amrap', minutes:[15,20,25],
   intro:'Séance bonus, à la maison. Sauter ce jour ne change rien au résultat : le muscle se construit sur les trois séances principales. AMRAP : le plus de tours possible dans le temps, rythme régulier.',
@@ -395,9 +401,9 @@ const DAYS = [
    {r:5, list:['400 m de course','20 swings','15 thrusters (goblet squat + press)','15 push-ups','20 reverse lunges alternées','10 burpees sans saut','40 m de farmer carry'], k:[null,'swing2','thruster','pompes','fente','burpee','farmer']}
   ],
   groundsG:[
-   {r:3, list:['500 m de rowing machine','15 swings KB 16 kg','10 dumbbell thrusters (squat + poussée au-dessus de la tête)','10 push-ups','20 m de dumbbell farmer walk'], k:['rower','kbswing16','dbthruster','pompes','farmerdb']},
-   {r:4, list:['500 m de rowing machine ou 250 m de SkiErg','20 swings KB 16 kg','15 dumbbell thrusters','15 push-ups','10 burpees sans saut','40 m de dumbbell farmer walk'], k:['rower','kbswing16','dbthruster','pompes','burpee','farmerdb']},
-   {r:5, list:['500 m de rowing machine','20 swings KB 16 kg','15 dumbbell thrusters','15 push-ups','20 m de sled push (ou 20 walking lunges)','10 burpees sans saut','40 m de dumbbell farmer walk'], k:['rower','kbswing16','dbthruster','pompes','sled','burpee','farmerdb']}
+   {r:3, list:['500 m de rowing machine ou SkiErg','15 swings KB 16 kg','10 dumbbell thrusters (squat + poussée au-dessus de la tête)','10 push-ups','20 m de dumbbell farmer walk'], k:['rower','kbswing16','dbthruster','pompes','farmerdb']},
+   {r:4, list:['500 m de rowing machine ou 250 m de SkiErg','20 swings KB 16 kg','15 dumbbell thrusters','15 push-ups','30 s de battle ropes','40 m de dumbbell farmer walk'], k:['rower','kbswing16','dbthruster','pompes','battlerope','farmerdb']},
+   {r:5, list:['500 m de rowing machine ou SkiErg','20 swings KB 16 kg','15 dumbbell thrusters','15 push-ups','20 m de sled push (ou 20 walking lunges)','40 s de battle ropes','40 m de dumbbell farmer walk'], k:['rower','kbswing16','dbthruster','pompes','sled','battlerope','farmerdb']}
   ]},
  {id:'dim', name:'Dimanche', title:'Repos', kind:'rest',
   intro:'Vrai repos. Le muscle se construit ici, pas à la salle.',
@@ -432,6 +438,9 @@ const HOW = {
  dbrow:['Genou et main sur le banc, dos plat, haltère bras tendu.','Tire le coude vers la hanche, pause 1 s.','Redescends en 2 s sans tourner le buste.','Erreurs : rotation du tronc, élan.'],
  walkinglunge:['Haltères le long du corps, grands pas.','Genou arrière frôle le sol, genou avant au-dessus de la cheville.','Pousse dans le talon avant pour enchaîner.','Erreurs : petits pas, buste qui se penche.'],
  facepull:['Corde à hauteur du visage, prise paumes face à face.','Tire vers les oreilles en écartant les mains, coudes hauts.','Pause 1 s, omoplates serrées, retour lent.','Erreurs : charge trop lourde, buste qui recule.'],
+ battlerope:['Pieds largeur d\'épaules, genoux fléchis, buste légèrement penché, tronc gainé.','Prise ferme mais détendue, coudes près du corps.','Vagues alternées : un bras monte pendant que l\'autre descend, petites vagues rapides.','Slams à deux bras : lève les deux cordes au-dessus de la tête et claque-les au sol en descendant en squat.','Cercles : les deux bras dessinent des cercles vers l\'extérieur. Change de variante toutes les 10 s.','Erreurs : se pencher trop, travailler uniquement des épaules, genoux tendus.'],
+ popup:['Allongé sur le ventre, mains à plat sous les épaules, regard devant.','Pousse fort sur les mains et, dans le même temps, ramène les deux pieds sous toi d\'un bond.','Atterris pieds décalés, un pied devant, genoux fléchis, buste bas, bras devant pour l\'équilibre.','Reviens au sol en contrôle, alterne le pied avant à chaque rep.','Erreurs : se relever en deux temps (genou puis pied), rester debout trop haut.'],
+ skierg:['Debout face à la machine, pieds largeur d\'épaules, poignées saisies bras tendus au-dessus de la tête.','Plie les hanches et les genoux en même temps que tu tires les poignées vers le bas, abdos contractés.','Finis les mains à hauteur des cuisses, buste penché, dos plat.','Remonte bras tendus en te redressant, puis enchaîne. Rythme 30 à 40 tirages par minute.','Erreurs : tirer uniquement avec les bras, dos rond en bas, rester debout sans utiliser les hanches.'],
  rower:['Attache les pieds, prise légère, dos plat.','Pousse avec les jambes, puis bascule le buste, puis tire les bras.','Retour : bras, buste, jambes.','Cadence 24 à 28 coups par minute, vise 2:10 à 2:30 par 500 m.']
 };
 const TESTS = [
@@ -483,14 +492,18 @@ function gymOn(){ const d=curDay; if(!d) return state.place==='gym'; const o=(st
 function noGripOn(){ if(!state.noGrip) return false; const t=new Date(); t.setHours(0,0,0,0); return iso(t) <= state.noGrip; }
 function bx(b){ if(noGripOn() && b.ng) return b.ng; return (gymOn() && b.g) ? b.g : b; }
 function placeChips(){ return `<div class="chips" style="padding-top:0"><button class="chip" aria-pressed="${!gymOn()}" data-place="home">Maison · KB 12 kg</button><button class="chip" aria-pressed="${gymOn()}" data-place="gym">Salle de sport</button>${expressChip()}</div><div class="chips sub" style="padding-top:0"><button class="chip ${noGripOn()?'':'quiet'}" aria-pressed="${noGripOn()}" data-nogrip="1">🩹 Sans grip${noGripOn()?' · jusqu\'au '+state.noGrip.slice(8,10)+'/'+state.noGrip.slice(5,7):''}</button></div>`; }
-const NOLOAD = new Set(['tgu','popup','pallof','scappush','russtwist','rower','bike','hangingknee','planche','hollow','deadbug','finisherhome','mobilite','wallsit','stepdown','pont','mollets','burpee','birddog','pont1','abduction','kickback','suitcase','halo','pullapart','pullthrough','hundred','rollup','singleleg','bridgemarch','sidekick','swimming','sunsal','chair','warrior2','warrior3','crescent','bridgeyoga','boat','childs','pigeon','pompesg','pompes','pike','dips','row1']);
+const NOLOAD = new Set(['skierg','finisherhinge','battlerope','tgu','popup','pallof','scappush','russtwist','rower','bike','hangingknee','planche','hollow','deadbug','finisherhome','mobilite','wallsit','stepdown','pont','mollets','burpee','birddog','pont1','abduction','kickback','suitcase','halo','pullapart','pullthrough','hundred','rollup','singleleg','bridgemarch','sidekick','swimming','sunsal','chair','warrior2','warrior3','crescent','bridgeyoga','boat','childs','pigeon','pompesg','pompes','pike','dips','row1']);
 function hasLoadField(b0,b){ return gymOn() && !!b0.g && !NOLOAD.has(b.k); }
 const LOWER = new Set(['backsquat','frontsquat','legpress','rdl','hipthrustbar','smithhipthrust','walkinglunge','bulgare','legcurl','stepupdb','hipthrustmachine','hipthrust1g','kbswing16']);
-function recoFor(k){ const r=(state.lastRpe||{})[k]; if(!r) return '';
-  if(r.load==null){ if(r.rpe<=6) return `<div class="reco up">Trop facile la dernière fois → ajoute 2 reps par série (ou 10 s sur les maintiens), ou passe à la variante plus dure.</div>`; if(r.rpe>=9) return `<div class="reco dn">Trop dur la dernière fois → garde le même nombre de reps, ou reviens à la variante plus facile.</div>`; return ''; }
-  const step=LOWER.has(k)?5:2.5; let txt, cls='eq';
-  if(r.rpe<=6){ txt='essaie '+(r.load+step)+' kg ▲'; cls='up'; } else if(r.rpe>=9){ txt='allège à '+Math.max(0,r.load-step)+' kg ▼'; cls='dn'; } else { txt='garde '+r.load+' kg ='; }
-  return `<div class="reco ${cls}">Dernière fois : ${r.load} kg · ${r.rpe}/10 → ${txt}</div>`; }
+function recoFor(k){ const r=(state.lastRpe||{})[k]; const n=adjOf(k,curPh());
+  if(!r){ return n>0?`<div class="reco up">Progression auto : palier ${n}/3 (+${2*n} reps, ou +${10*n} s sur les maintiens, par rapport à la consigne de base).</div>`:''; }
+  if(r.load==null){
+    if(r.rpe<=6){ if(n>=ADJ_MAX) return `<div class="reco up">Facile et déjà au palier 3/3 : passe à la variante plus dure (celle de la phase suivante).</div>`; return `<div class="reco up">Facile la dernière fois → consigne relevée d\'un palier (+2 reps, ou +10 s sur les maintiens) · palier ${n}/3.</div>`; }
+    if(r.rpe>=9) return `<div class="reco dn">Difficile la dernière fois → ${n>0?`consigne baissée d\'un palier (palier ${n}/3)`:'consigne de base, technique avant tout'}.</div>`;
+    return n>0?`<div class="reco eq">Progression auto : palier ${n}/3 (+${2*n} reps, ou +${10*n} s sur les maintiens).</div>`:''; }
+  const step=LOWER.has(k)?5:2.5; const cur=(state.loads||{})[k]; let txt, cls='eq';
+  if(r.rpe<=6){ txt='aujourd\'hui '+(cur!=null?cur:r.load+step)+' kg ▲ (prérempli)'; cls='up'; } else if(r.rpe>=9){ txt='aujourd\'hui '+(cur!=null?cur:Math.max(0,r.load-step))+' kg ▼ (prérempli)'; cls='dn'; } else { txt='garde '+r.load+' kg ='; }
+  return `<div class="reco ${cls}">Dernière fois : ${r.load} kg · ${r.fb==='easy'?'facile':r.fb==='hard'?'difficile':'ok'} → ${txt}</div>`; }
 function loadField(k){ state.loads=state.loads||{}; const v=state.loads[k]; return `<label class="loadf"><span>Charge</span><input type="number" inputmode="decimal" step="0.5" placeholder="kg" value="${v!=null?v:''}" data-load="${k}"></label>${recoFor(k)}`; }
 function bindPlace(root){
   root.querySelectorAll('[data-place]').forEach(b=>b.onclick=()=>{ state.placeByDay=state.placeByDay||{}; if(curDay) state.placeByDay[curDay.id]=b.dataset.place; state.place=b.dataset.place; persist(); if(guided.active) stopGuided(); rerender(); });
@@ -506,11 +519,16 @@ function focusChips(){ return `<div class="chips" style="padding-top:0"><button 
 
 /* ===================== Durée & mode express ===================== */
 function expressOn(){ return !!state.express; }
-function restFor(day,ph){ const base = day.rest ? (ph===2?Math.max(45,day.rest-30):day.rest) : 45; return expressOn()? Math.min(base,45) : base; }
+const CORE = new Set(['planche','hollow','deadbug','birddog','mollets','wallsit','pont','pont1','abduction','kickback','pullapart','halo','hangingknee','hundred','rollup','singleleg','bridgemarch','sidekick','swimming','mobilite','suitcase','stepdown']);
+function restFor(day,ph,b){ const base = day.rest ? (ph===2?Math.max(45,day.rest-30):day.rest) : 45; let r = expressOn()? Math.min(base,45) : base; if(b && CORE.has(b.k)) r=Math.min(r, expressOn()?30:45); return r; }
 function setsFor(b,ph,w,day){ let n=setsOf(rxFor(b.p[ph])); if((w===4||w===8) && day.kind==='sets') n=Math.max(1,n-1); if(expressOn()) n=Math.min(n,3); return n; }
-function rxShow(b,ph,w,day){ const n=setsFor(b,ph,w,day); return rxFor(b.p[ph]).replace(/^\d+(\s*×)/, (m,x)=>n+x); }
+function adjOf(k,ph){ const a=(state.adj||{})[k]; if(!a||a.ph!==ph) return 0; return a.n||0; }
+function curPh(){ return phaseOf((guided.active||guided.finished)?guided.week:(view.week??currentWeek())); }
+const ADJ_MAX=3;
+function bumpRx(rx,k,ph){ const n=adjOf(k,ph); if(!n) return rx; if(/×\s*\d+\s*min\b/.test(rx)) return rx; if(/×\s*\d+\s*s\b/.test(rx)) return rx.replace(/(×\s*)(\d+)(\s*s\b)/, (m,a,v,c)=>a+(+v+10*n)+c); if(/×\s*\d+\s*m\b/.test(rx)) return rx.replace(/(×\s*)(\d+)(\s*m\b)/, (m,a,v,c)=>a+(+v+10*n)+c); return rx.replace(/(×\s*)(\d+)/, (m,a,v)=>a+(+v+2*n)); }
+function rxShow(b,ph,w,day){ const n=setsFor(b,ph,w,day); return bumpRx(rxFor(b.p[ph]).replace(/^\d+(\s*×)/, (m,x)=>n+x), b.k, ph); }
 function warmMin(){ return expressOn()?3:5; }
-function blocksMin(day,ph,w,list){ const r=restFor(day,ph); return list.reduce((t,x)=>{ const b=bx(x.b0); return t + setsFor(b,ph,w,day)*(45+r)/60; },0); }
+function blocksMin(day,ph,w,list){ return list.reduce((t,x)=>{ const b=bx(x.b0); return t + setsFor(b,ph,w,day)*(45+restFor(day,ph,b))/60; },0); }
 function activeBlocks(day,ph,w){
   const all=day.blocks.map((b0,i)=>({b0,i})); if(!expressOn()) return all;
   const fixed = day.kind==='recovery' ? 10 : warmMin();
@@ -602,10 +620,10 @@ function renderToday(){
     const exAlready = day.kind==='recovery' ? exDone(w,day.id) : isDone(w,day.id);
     if(guided.finished && guided.week===w && guided.day===dIdx){ html += renderRecap(day, ph, w); }
     else if(exAlready){ /* circuit déjà enregistré */ }
-    else html += `<div class="row" style="margin:10px 0"><button class="btn ${day.kind==='recovery'?'ghost':''}" id="goBtn" style="flex:1">${day.kind==='recovery'?((state.tueFocus==='surf')?'Go · circuit surf (guidé)':'Go · circuit genou (guidé)'):'Go · séance guidée'}</button></div>` + `<div class="card">`+activeBlocks(day,ph,w).map(({b0,i})=>{ const b=bx(b0); return `<div class="ex ${checks[i]?'on':''} ${checks[i]===false?'skipped':''}" data-i="${i}"><button class="chk" aria-label="Valider ${esc(b.n)}" data-check="${i}">${checks[i]?'✓':(checks[i]===false?'✕':'')}</button><div><div class="name">${esc(b.n)}</div><div class="rx">${esc(rxShow(b,ph,w,day))}</div><div class="cue">${esc(b.cue)}</div>${hasLoadField(b0,b)?loadField(b.k):(b.k?recoFor(b.k):'')}${b.k?imgTools(b.k):''}</div>${day.kind==='sets'?`<button class="rest" data-rest="${restFor(day,ph)}">Repos ${restFor(day,ph)} s</button>`:'<span></span>'}</div>${(!(day.kind==='recovery'?exDone(w,day.id):isDone(w,day.id)) && (day.kind==='sets'||day.kind==='recovery'))?`<div class="exfb">${fbButtons(i,true,true)}</div>`:''}`; }).join('')+`</div>`;
+    else html += `<div class="row" style="margin:10px 0"><button class="btn ${day.kind==='recovery'?'ghost':''}" id="goBtn" style="flex:1">${day.kind==='recovery'?((state.tueFocus==='surf')?'Go · circuit surf (guidé)':'Go · circuit genou (guidé)'):'Go · séance guidée'}</button></div>` + `<div class="card">`+activeBlocks(day,ph,w).map(({b0,i})=>{ const b=bx(b0); return `<div class="ex ${checks[i]?'on':''} ${checks[i]===false?'skipped':''}" data-i="${i}"><button class="chk" aria-label="Valider ${esc(b.n)}" data-check="${i}">${checks[i]?'✓':(checks[i]===false?'✕':'')}</button><div><div class="name">${esc(b.n)}</div><div class="rx">${esc(rxShow(b,ph,w,day))}</div><div class="cue">${esc(b.cue)}</div>${hasLoadField(b0,b)?loadField(b.k):(b.k?recoFor(b.k):'')}${b.k?imgTools(b.k):''}</div>${day.kind==='sets'?`<button class="rest" data-rest="${restFor(day,ph,b)}">Repos ${restFor(day,ph,b)} s</button>`:'<span></span>'}</div>${(!(day.kind==='recovery'?exDone(w,day.id):isDone(w,day.id)) && (day.kind==='sets'||day.kind==='recovery'))?`<div class="exfb">${fbButtons(i,true,true)}</div>`:''}`; }).join('')+`</div>`;
   }
   if(noGripOn() && (day.kind==='amrap' || day.kind==='rounds')){
-    html += `<div class="warnbox"><b>Séance en pause</b> jusqu'au ${esc(state.noGrip)} : swings, carries et cleans demandent un poing fermé. Remplace par 20 à 30 min de vélo ou de marche en côte, ou repos.</div>`;
+    html += `<div class="warnbox"><b>Séance en pause</b> jusqu'au ${esc(state.noGrip)} : swings, carries et cleans demandent un poing fermé. Remplace par 20 à 30 min d'elliptique, de vélo ou de marche en côte, ou repos.</div>`;
   }
   if(day.kind==='amrap'){
     const mins = expressOn()?Math.min(day.minutes[ph],15):day.minutes[ph];
@@ -650,7 +668,7 @@ function renderToday(){
     state.sessions.push(Object.assign({}, existing||{}, {key:sessionKey(w,day.id), week:w, day:day.id, title:day.title, place:gymOn()?'gym':'home', date:iso(new Date()), rpe:+document.getElementById('rpe').value, note:document.getElementById('snote').value.trim(), bpm:(parseInt((document.getElementById('sbpm')||{}).value)||undefined), dur:durMin, rounds:rounds||undefined, time: (day.kind==='rounds' && big.elapsed)? big.elapsed : (day.kind==='amrap' && big.started ? big.secs-big.remaining : undefined), score: sessionScore(day, ph, w, rounds, (day.kind==='rounds'&&big.elapsed)?big.elapsed:0)}));
     if(existing && existing.dur && durMin){ state.sessions[state.sessions.length-1].dur = existing.dur + durMin; }
     const rpeV=+document.getElementById('rpe').value; state.lastRpe=state.lastRpe||{}; state.loadLog=state.loadLog||{}; const FBR={easy:5,ok:7,hard:9}; const exList=[];
-    if(day.kind==='sets'||day.kind==='recovery'){ activeBlocks(day,ph,w).forEach(({b0,i})=>{ const b=bx(b0); const chk=(state.checks[sessionKey(w,day.id)]||[])[i]; if(chk===false){ exList.push({k:b.k, n:b.n, sets:0, load:null, fb:'skip', next:null}); return; } const fb=(guided.active||guided.finished)?(guided.fb||{})[i]:(((state.fbs||{})[sessionKey(w,day.id)]||{})[i]); const r = fb?FBR[fb]:7; const hasLoad=(hasLoadField(b0,b)&&state.loads&&state.loads[b.k]!=null); state.lastRpe[b.k]={rpe:r, load:hasLoad?state.loads[b.k]:null, date:iso(new Date()), fb:fb||null}; if(hasLoad){ (state.loadLog[b.k]=state.loadLog[b.k]||[]).push({d:iso(new Date()), w:w, load:state.loads[b.k], fb:fb||null}); } const sets=guided.finished? guided.seq.filter((x,idx)=>x.t==='work'&&x.i===i&&guided.done.has(idx)).length : setsFor(b,ph,w,day); exList.push({k:b.k, n:b.n, sets, load:hasLoad?state.loads[b.k]:null, fb:fb||null, next:nextReco(b.k)}); }); }
+    if(day.kind==='sets'||day.kind==='recovery'){ activeBlocks(day,ph,w).forEach(({b0,i})=>{ const b=bx(b0); const chk=(state.checks[sessionKey(w,day.id)]||[])[i]; if(chk===false){ exList.push({k:b.k, n:b.n, sets:0, load:null, fb:'skip', next:null}); return; } const fb=(guided.active||guided.finished)?(guided.fb||{})[i]:(((state.fbs||{})[sessionKey(w,day.id)]||{})[i]); const r = fb?FBR[fb]:7; const hasLoad=(hasLoadField(b0,b)&&state.loads&&state.loads[b.k]!=null); state.lastRpe[b.k]={rpe:r, load:hasLoad?state.loads[b.k]:null, date:iso(new Date()), fb:fb||null}; if(hasLoad){ (state.loadLog[b.k]=state.loadLog[b.k]||[]).push({d:iso(new Date()), w:w, load:state.loads[b.k], fb:fb||null}); } const doneLoad=hasLoad?state.loads[b.k]:null; if(fb==='easy'||fb==='hard'){ if(hasLoad){ const step=LOWER.has(b.k)?5:2.5; state.loads[b.k]= fb==='easy'? Math.round((doneLoad+step)*2)/2 : Math.max(0,Math.round((doneLoad-step)*2)/2); } else if(b.k && !/^(mobilite|bike|rower|finisher|sunsal)/.test(b.k)){ state.adj=state.adj||{}; const a=state.adj[b.k]; const n0=(a&&a.ph===ph)?a.n:0; state.adj[b.k]={ph, n: fb==='easy'?Math.min(ADJ_MAX,n0+1):Math.max(0,n0-1)}; } } const sets=guided.finished? guided.seq.filter((x,idx)=>x.t==='work'&&x.i===i&&guided.done.has(idx)).length : setsFor(b,ph,w,day); exList.push({k:b.k, n:b.n, sets, load:doneLoad, fb:fb||null, next:nextReco(b.k)}); }); }
     const sess=state.sessions[state.sessions.length-1]; sess.ex=exList; const fbsAll=exList.filter(e=>e.fb); if(fbsAll.length) sess.rpe=Math.round(fbsAll.reduce((t,e)=>t+FBR[e.fb],0)/fbsAll.length);
     persist(); stopBig(); if(guided.finished) stopGuided(); toast('Séance enregistrée'); renderToday();
   };
@@ -671,7 +689,7 @@ function repsOf(rx){ const m=/×\s*(\d+)/.exec(rx); return m?+m[1]:1; }
 function sessionScore(day, ph, w, rounds, time){
   if(day.kind==='amrap') return rounds||0;
   if(day.kind==='rounds') return time? Math.round(-time/60*10)/10 : (rounds||0);
-  if(day.kind==='sets' || day.kind==='recovery'){ let s=0; activeBlocks(day,ph,w).forEach(({b0})=>{ const b=bx(b0); const n=setsFor(b,ph,w,day), r=repsOf(rxFor(b.p[ph])); const L=(gymOn()&&b0.g&&state.loads&&state.loads[b.k])||1; s+=n*r*L; }); return Math.round(s); }
+  if(day.kind==='sets' || day.kind==='recovery'){ let s=0; activeBlocks(day,ph,w).forEach(({b0})=>{ const b=bx(b0); const n=setsFor(b,ph,w,day), r=repsOf(rxShow(b,ph,w,day)); const L=(gymOn()&&b0.g&&state.loads&&state.loads[b.k])||1; s+=n*r*L; }); return Math.round(s); }
   return 0;
 }
 function scoreArrow(wk, id){
@@ -692,7 +710,7 @@ function savedCard(s, day){
   ${s.note?`<p class="note">${esc(s.note)}</p>`:''}
   <div class="row" style="margin-top:10px"><button class="btn small" id="shareBtn">Partager le récap</button><button class="btn ghost small" id="undoBtn">Annuler l\'enregistrement</button></div></div>`;
 }
-function nextReco(k){ const r=(state.lastRpe||{})[k]; if(!r) return null; if(r.load==null){ if(r.rpe<=6) return {cls:'up', txt:'+2 reps / +10 s'}; if(r.rpe>=9) return {cls:'dn', txt:'garde ou allège'}; return {cls:'eq', txt:'pareil'}; } const step=LOWER.has(k)?5:2.5; if(r.rpe<=6) return {cls:'up', txt:(r.load+step)+' kg'}; if(r.rpe>=9) return {cls:'dn', txt:Math.max(0,r.load-step)+' kg'}; return {cls:'eq', txt:r.load+' kg'}; }
+function nextReco(k){ const r=(state.lastRpe||{})[k]; if(!r) return null; const n=adjOf(k,curPh()); if(r.load==null){ if(r.rpe<=6) return n>=ADJ_MAX&&r.fb==='easy'? {cls:'up', txt:'variante plus dure'} : {cls:'up', txt:'+2 reps / +10 s'}; if(r.rpe>=9) return {cls:'dn', txt: r.fb==='hard'&&n>0?'−2 reps / −10 s':'pareil, technique'}; return {cls:'eq', txt:'pareil'}; } const cur=(state.loads||{})[k]; const step=LOWER.has(k)?5:2.5; if(r.rpe<=6) return {cls:'up', txt:(cur!=null?cur:r.load+step)+' kg'}; if(r.rpe>=9) return {cls:'dn', txt:(cur!=null?cur:Math.max(0,r.load-step))+' kg'}; return {cls:'eq', txt:r.load+' kg'}; }
 async function shareSession(s, day){
   const W=1080, H=1350; const c=document.createElement('canvas'); c.width=W; c.height=H; const x=c.getContext('2d');
   const cs=getComputedStyle(document.documentElement); const accent=cs.getPropertyValue('--accent').trim()||'#333';
@@ -729,8 +747,8 @@ let guided = {iv:{running:false,phase:'',left:0,round:0,rounds:0,int:null}, acti
 function setsOf(rx){ const m=/^(\d+)\s*×/.exec(rx); return m?+m[1]:1; }
 function timedSecs(rx){ let m=/×\s*(\d+)\s*(min|s)\b/.exec(rx); if(!m) m=/^(\d+)\s*(min)\b/.exec(rx); if(!m) return 0; return m[2]==='min'? +m[1]*60 : +m[1]; }
 function buildSeq(day, ph, w){
-  const seq=[]; const restSecs=restFor(day,ph);
-  activeBlocks(day,ph,w).forEach(({b0,i})=>{ const b=bx(b0); const n=setsFor(b,ph,w,day); for(let s=1;s<=n;s++){ seq.push({t:'work',i,s,n}); seq.push({t:'rest',i,s,n,secs:restSecs}); } });
+  const seq=[];
+  activeBlocks(day,ph,w).forEach(({b0,i})=>{ const b=bx(b0); const n=setsFor(b,ph,w,day); const restSecs=restFor(day,ph,b); for(let s=1;s<=n;s++){ seq.push({t:'work',i,s,n}); seq.push({t:'rest',i,s,n,secs:restSecs}); } });
   seq.pop(); return seq;
 }
 function startGuided(day, ph, w, dIdx){
@@ -756,7 +774,9 @@ function guidedNext(){
     guided.restLeft=st.secs;
     const day=DAYS[guided.day]; const nxt=guided.seq.slice(guided.pos+1).find(x=>x.t==='work'); const nb=nxt?bx(day.blocks[nxt.i]):null;
     if(st.s===st.n && nb) setTimeout(()=>say('Prochain exercice : '+nb.n), 700);
-    guided.int=setInterval(()=>{ guided.restLeft--; const el=document.getElementById('gCount'); if(el) el.textContent=fmt(guided.restLeft); countdownCue(guided.restLeft); if(guided.restLeft<=0){ if(state.voice!==false) say('Go'); else beep(2); guidedNext(); } },1000);
+    guided.restEnd=Date.now()+st.secs*1000;
+    guided.tick=()=>{ if(!guided.active) return; const nl=Math.max(0,Math.ceil((guided.restEnd-Date.now())/1000)); if(nl===guided.restLeft) return; const prev=guided.restLeft; guided.restLeft=nl; const el=document.getElementById('gCount'); if(el) el.textContent=fmt(nl); if(prev-nl===1) countdownCue(nl); if(nl<=0){ clearInterval(guided.int); guided.tick=null; if(state.voice!==false) say('Go'); else beep(2); guidedNext(); } };
+    guided.int=setInterval(guided.tick,400);
   }
   drawGuided();
 }
@@ -778,17 +798,22 @@ function repPart(rx){ const m=/×\s*(.*)$/.exec(rx); const s=(m?m[1]:rx).trim();
 function startIntervals(on, off, rounds){
   clearInterval(guided.iv.int); guided.iv={running:true, phase:'pre', left:3, round:1, rounds, on, off, int:null};
   say('3'); drawIvTick();
-  guided.iv.int=setInterval(()=>{ const v=guided.iv; v.left--;
-    if(v.phase==='pre'){ if(v.left>0){ say(String(v.left)); } else { v.phase='on'; v.left=on; say('Go'); beep(1); } }
-    else if(v.phase==='on'){ if(v.left>0 && v.left<=3) countdownCue(v.left); if(v.left<=0){ v.phase='off'; v.left=off; beep(2); say('Facile'); } }
-    else if(v.phase==='off'){ if(v.left>0 && v.left<=3) countdownCue(v.left); if(v.left<=0){ v.round++; if(v.round>v.rounds){ clearInterval(v.int); v.running=false; beep(3); say('Terminé'); guidedNext(); return; } v.phase='on'; v.left=on; beep(1); say('Go'); } }
-    drawIvTick(); },1000);
+  guided.iv.phaseEnd=Date.now()+3000;
+  guided.iv.tick=()=>{ const v=guided.iv; if(!v.running) return; const nl=Math.max(0,Math.ceil((v.phaseEnd-Date.now())/1000)); if(nl===v.left) return; const prev=v.left; v.left=nl;
+    if(v.left>0){ if(prev-v.left===1){ if(v.phase==='pre') say(String(v.left)); else if(v.left<=3) countdownCue(v.left); } drawIvTick(); return; }
+    if(v.phase==='pre'){ v.phase='on'; v.left=on; v.phaseEnd=Date.now()+on*1000; say('Go'); beep(1); }
+    else if(v.phase==='on'){ v.phase='off'; v.left=off; v.phaseEnd=Date.now()+off*1000; beep(2); say('Facile'); }
+    else { v.round++; if(v.round>v.rounds){ clearInterval(v.int); v.running=false; v.tick=null; beep(3); say('Terminé'); guidedNext(); return; } v.phase='on'; v.left=on; v.phaseEnd=Date.now()+on*1000; beep(1); say('Go'); }
+    drawIvTick(); };
+  guided.iv.int=setInterval(guided.iv.tick,400);
   const b=document.getElementById('gIvStart'); if(b){ b.disabled=true; b.textContent='En cours…'; }
 }
 function drawIvTick(){ const v=guided.iv; const el=document.getElementById('gWork'); if(el){ el.textContent=fmt(v.left); el.classList.toggle('off', v.phase==='off'); } const p=document.getElementById('ivPhase'); if(p) p.textContent = v.phase==='pre'?'PRÊT':(v.phase==='on'?'FORT':'FACILE'); const r=document.getElementById('ivRound'); if(r) r.textContent='Tour '+Math.min(v.round,v.rounds)+'/'+v.rounds; }
 function startWorkTimer(secs){
   clearInterval(guided.work.int); guided.work.left=secs; guided.work.running=true; say('Go');
-  guided.work.int=setInterval(()=>{ guided.work.left--; const el=document.getElementById('gWork'); if(el) el.textContent=fmt(guided.work.left); countdownCue(guided.work.left); if(guided.work.left<=0){ clearInterval(guided.work.int); guided.work.running=false; beep(2); guidedNext(); } },1000);
+  guided.work.end=Date.now()+secs*1000;
+  guided.work.tick=()=>{ const w2=guided.work; if(!w2.running) return; const nl=Math.max(0,Math.ceil((w2.end-Date.now())/1000)); if(nl===w2.left) return; const prev=w2.left; w2.left=nl; const el=document.getElementById('gWork'); if(el) el.textContent=fmt(nl); if(prev-nl===1) countdownCue(nl); if(nl<=0){ clearInterval(w2.int); w2.running=false; w2.tick=null; beep(2); guidedNext(); } };
+  guided.work.int=setInterval(guided.work.tick,400);
   const btn=document.getElementById('gTimerStart'); if(btn){ btn.textContent='En cours…'; btn.disabled=true; }
 }
 function finishGuided(){ clearGuidedTimers(); guided.finished=true; guided.endedAt=Date.now(); beep(3); closeGf(); if(guided.wake){ try{guided.wake.release();}catch(e){} } renderToday(); }
@@ -813,7 +838,7 @@ function drawGuided(){
   const gf=document.getElementById('gf'); gf.classList.toggle('rest', st.t==='rest');
   let body='', actions='';
   if(st.t==='work'){
-    const rx=rxShow(b,ph,w,day); const secs=timedSecs(rx); const iv=b.iv||null;
+    const rx=rxShow(b,ph,w,day); const secs=timedSecs(rx); const iv=b.iv?(Array.isArray(b.iv)?b.iv[ph]:b.iv):null;
     const rp=repPart(rx); const doneSets=guided.seq.filter((x,idx)=>x.t==='work'&&x.i===st.i&&guided.done.has(idx)).length; const repsN=repsOf(rx);
     const ivRounds = iv ? (iv.rounds || parseInt(rx) || 6) : 0; const key = iv ? `${ivRounds} × ${iv.on}/${iv.off} s` : (secs ? fmt(secs) : rp.num);
     body=`<div class="lbl">Série ${st.s} sur ${st.n}</div><div class="count">${esc(key)}</div><div class="lbl" style="margin-top:-4px">${esc(iv?'intervalles':(secs?'à tenir':rp.unit||'reps'))}</div><div class="exname">${esc(b.n)}</div><div class="cue">${esc(b.cue)}</div>${hasLoadField(b0,b)?loadField(b.k):(b.k?recoFor(b.k):'')}${b.k?thumb(b.k):''}${b.k?howHtml(b.k):''}`;
@@ -825,12 +850,19 @@ function drawGuided(){
     const nxt=guided.seq.slice(guided.pos+1).find(x=>x.t==='work' && x.i!==st.i); const nb0=nxt?day.blocks[nxt.i]:null; const nb=nb0?bx(nb0):null; const last=(st.s===st.n);
     body=`<div class="lbl">Repos</div><div class="count" id="gCount">${fmt(guided.restLeft)}</div>`;
     if(last){ body+=`<div class="donecard"><div class="lbl ok big">Terminé ✓</div><div class="exname">${esc(rxShow(b,ph,w,day).split(',')[0])} ${esc(b.n)}</div>${fbButtons(st.i,true)}</div>`; }
-    if(last && nb){ body+=`<div class="nextcard"><div class="lbl accent big">Prochain set</div><div class="exname">${esc(rxShow(nb,ph,w,day).split(',')[0])} ${esc(nb.n)}</div><div class="cue">${esc(nb.cue)}</div>${nb.k?recoFor(nb.k):''}${nb.k?thumb(nb.k):''}</div>`; }
+    if(last && nb){ body+=`<div class="nextcard"><div class="lbl accent big">Prochain set</div><div class="exname">${esc(rxShow(nb,ph,w,day).split(',')[0])} ${esc(nb.n)}</div><div class="cue">${esc(nb.cue)}</div>${nb.k?recoFor(nb.k):''}${nb.k?thumb(nb.k):''}${nb.k?`<div class="tools" style="margin-top:10px"><a class="link" href="${ytLink(nb.k)}" target="_blank" rel="noopener">▶ Vidéo</a></div>${howHtml(nb.k)}`:''}</div>`; }
     else if(!last){ const rxb=rxShow(b,ph,w,day); const rpb=repPart(rxb); body+=`<div class="nextcard"><div class="lbl accent big">Ensuite : série ${st.s+1}/${st.n}</div><div class="exname">${esc(rpb.num)}${rpb.unit?' '+esc(rpb.unit):''} × ${esc(b.n)}</div></div>`; }
+    body+=remainingHtml(day,ph,w);
     actions=`<button class="btn" id="gNext">Passer le repos</button><div class="small-row"><button class="btn ghost" id="gPlus">+30 s</button><button class="btn ghost" id="gPrev">Retour</button><button class="btn ghost" id="gQuit">Quitter</button></div>`;
   }
   document.getElementById('gfBody').innerHTML=body; document.getElementById('gfActions').innerHTML=actions; document.getElementById('gfBody').scrollTop=0;
   bindGuided(gf); bindImages(gf); bindPlace(gf);
+}
+function remainingHtml(day,ph,w){
+  const rows=[]; let i=-1;
+  guided.seq.slice(guided.pos+1).forEach(x=>{ if(x.t!=='work') return; if(x.i!==i){ i=x.i; rows.push({i, b:bx(day.blocks[i]), from:x.s, n:x.n}); } });
+  if(!rows.length) return '';
+  return `<div class="lbl" style="margin-top:22px">Reste à faire</div><ol class="remain">${rows.map(r=>{ const rx=rxShow(r.b,ph,w,day); const p=repPart(rx); const left=r.n-r.from+1; return `<li>${left<r.n?`${left}/${r.n}`:r.n} × ${esc(p.num)}${p.unit?' '+esc(p.unit):''} · ${esc(r.b.n)}</li>`; }).join('')}</ol>`;
 }
 function renderGuided(){ return ''; }
 function renderRecap(day, ph, w){
@@ -850,7 +882,7 @@ function bindGuided(root){ root=root||document;
   const ts=root.querySelector('#gTimerStart'); if(ts) ts.onclick=()=>startWorkTimer(+ts.dataset.secs);
   const ivb=root.querySelector('#gIvStart'); if(ivb) ivb.onclick=()=>startIntervals(+ivb.dataset.on, +ivb.dataset.off, +ivb.dataset.rounds);
   const q=root.querySelector('#gQuit'); if(q) q.onclick=()=>{ if(confirm('Quitter le mode guidé ? Les exercices validés restent cochés.')){ stopGuided(); renderToday(); } };
-  const pl=root.querySelector('#gPlus'); if(pl) pl.onclick=()=>{ guided.restLeft+=30; const el=document.getElementById('gCount'); if(el) el.textContent=fmt(guided.restLeft); };
+  const pl=root.querySelector('#gPlus'); if(pl) pl.onclick=()=>{ guided.restLeft+=30; guided.restEnd=(guided.restEnd||Date.now())+30000; const el=document.getElementById('gCount'); if(el) el.textContent=fmt(guided.restLeft); };
   const r=document.getElementById('rpe'); if(r){ r.oninput=()=>{ const v=document.getElementById('rpeVal'); if(v) v.textContent=r.value+'/10'; }; }
   root.querySelectorAll('[data-rcheck]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.rcheck; const day=DAYS[guided.day]; const k=sessionKey(guided.week,day.id); const arr=state.checks[k]||[]; arr[i]=!(arr[i]!==false && b.textContent==='✓'); state.checks[k]=arr; persist(); if(!arr[i]){ guided.seq.forEach((x,idx)=>{ if(x.t==='work'&&x.i===i) guided.done.delete(idx); }); } else { guided.seq.forEach((x,idx)=>{ if(x.t==='work'&&x.i===i) guided.done.add(idx); }); } renderToday(); });
   const d=document.getElementById('discardBtn'); if(d) d.onclick=()=>{ if(confirm('Abandonner cette séance ? Rien ne sera enregistré.')){ stopGuided(); renderToday(); } };
@@ -868,9 +900,11 @@ function runStart(day, ph, w){
   document.getElementById('rList').innerHTML=`<li>${esc(expressOn()?day.runExpress:day.run[ph])}</li><li>Genou : douleur ≥ 3/10 → marche. Foulée courte, terrain plat.</li>`;
   try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').then(l=>run.wake=l).catch(()=>{}); }catch(e){}
   runf.classList.add('show'); runDraw(); say('Go');
-  run.int=setInterval(()=>{ if(run.running){ run.elapsed++; if(run.planMin>0 && run.elapsed===run.planMin*60){ beep(3); say('Temps prévu atteint. Continue si tu veux.'); } runDraw(); } },1000);
+  run.startAt=Date.now(); run.acc=0; run.warned=false;
+  run.tick=()=>{ if(!run.active||!run.running) return; const el=run.acc+Math.floor((Date.now()-run.startAt)/1000); if(el===run.elapsed) return; run.elapsed=el; if(run.planMin>0 && !run.warned && run.elapsed>=run.planMin*60){ run.warned=true; beep(3); say('Temps prévu atteint. Continue si tu veux.'); } runDraw(); };
+  run.int=setInterval(run.tick,400);
 }
-document.getElementById('rPause').onclick=()=>{ run.running=!run.running; runDraw(); };
+document.getElementById('rPause').onclick=()=>{ if(run.running){ run.acc=run.elapsed; run.running=false; } else { run.startAt=Date.now(); run.running=true; } runDraw(); };
 document.getElementById('rQuit').onclick=()=>{ if(run.elapsed<60 && !confirm('Terminer déjà ? Rien ne sera enregistré.')) return; clearInterval(run.int); run.running=false; run.active=false; run.done=run.elapsed>=60; runf.classList.remove('show'); if(run.wake){ try{run.wake.release();}catch(e){} } renderToday(); };
 function runRecap(day, w){
   const mins=Math.round(run.elapsed/60);
@@ -891,9 +925,13 @@ function startCircuit(day, ph, w){
   circ={active:true, kind:day.kind, items, keys, idx:0, round:1, rounds, secs, left:secs, elapsed:0, int:null, resting:false, restLeft:0, day, ph, w, cap};
   guided.scrollY=window.scrollY; document.body.classList.add('locked'); document.body.style.top=(-guided.scrollY)+'px'; document.getElementById('gf').classList.add('show');
   try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').then(l=>guided.wake=l).catch(()=>{}); }catch(e){}
-  circ.int=setInterval(()=>{ if(circ.resting){ circ.restLeft--; countdownCue(circ.restLeft); if(circ.restLeft<=0){ circ.resting=false; beep(1); say('Go'); drawCircuit(); return; } const el=document.getElementById('cRest'); if(el) el.textContent=fmt(circ.restLeft); return; }
-    if(circ.kind==='amrap'){ circ.left--; if(circ.left>0&&circ.left<=5) tickBeep(); if(circ.left<=0){ finishCircuit(true); return; } } else { circ.elapsed++; if(circ.cap && circ.elapsed===circ.cap){ beep(3); say('Cap atteint, termine ton tour'); } }
-    const t=document.getElementById('gfElapsed'); if(t){ t.textContent = `Tour ${circ.round}${isFinite(circ.rounds)?'/'+circ.rounds:''} · ${circ.kind==='amrap'? fmt(circ.left) : fmt(circ.elapsed)}`; t.classList.toggle('over', !!circ.cap && circ.elapsed>=circ.cap); } },1000);
+  circ.startAt=Date.now(); circ.acc=0; circ.capWarned=false;
+  circ.tick=()=>{ if(!circ.active) return;
+    if(circ.resting){ const nl=Math.max(0,Math.ceil((circ.restEnd-Date.now())/1000)); if(nl!==circ.restLeft){ const prev=circ.restLeft; circ.restLeft=nl; if(prev-nl===1) countdownCue(nl); const el=document.getElementById('cRest'); if(el) el.textContent=fmt(nl); if(nl<=0){ circ.resting=false; circ.startAt=Date.now(); beep(1); say('Go'); drawCircuit(); } } return; }
+    const el=circ.acc+Math.floor((Date.now()-circ.startAt)/1000); if(el===circ.elapsed) return; const prev=circ.elapsed; circ.elapsed=el;
+    if(circ.kind==='amrap'){ circ.left=Math.max(0,circ.secs-el); if(el-prev===1 && circ.left>0 && circ.left<=5) tickBeep(); if(circ.left<=0){ finishCircuit(true); return; } } else if(circ.cap && !circ.capWarned && el>=circ.cap){ circ.capWarned=true; beep(3); say('Cap atteint, termine ton tour'); }
+    const t=document.getElementById('gfElapsed'); if(t){ t.textContent = `Tour ${circ.round}${isFinite(circ.rounds)?'/'+circ.rounds:''} · ${circ.kind==='amrap'? fmt(circ.left) : fmt(circ.elapsed)}`; t.classList.toggle('over', !!circ.cap && circ.elapsed>=circ.cap); } };
+  circ.int=setInterval(circ.tick,400);
   drawCircuit(); say('Go');
 }
 function drawCircuit(){
@@ -922,17 +960,17 @@ function drawCircuit(){
   bindImages(gf);
 }
 function circNext(){
-  if(circ.resting){ circ.resting=false; drawCircuit(); return; }
+  if(circ.resting){ circ.resting=false; circ.startAt=Date.now(); drawCircuit(); return; }
   circ.idx++;
   if(circ.idx>=circ.items.length){ circ.idx=0; circ.round++; beep(2);
     if(isFinite(circ.rounds) && circ.round>circ.rounds){ finishCircuit(true); return; }
     say('Tour '+circ.round);
-    if(circ.kind==='rounds' && circ.ph===0){ circ.resting=true; circ.restLeft=120; drawCircuit(); return; }
+    if(circ.kind==='rounds' && circ.ph===0){ circ.acc=circ.elapsed; circ.resting=true; circ.restLeft=120; circ.restEnd=Date.now()+120000; drawCircuit(); return; }
   } else { const it=parseItem(circ.items[circ.idx]); say(it.num+' '+it.name); }
   drawCircuit();
 }
 function circPrev(){
-  if(circ.resting){ circ.resting=false; circ.round--; circ.idx=circ.items.length-1; drawCircuit(); return; }
+  if(circ.resting){ circ.resting=false; circ.startAt=Date.now(); circ.round--; circ.idx=circ.items.length-1; drawCircuit(); return; }
   circ.idx--; if(circ.idx<0){ if(circ.round>1){ circ.round--; circ.idx=circ.items.length-1; } else circ.idx=0; }
   drawCircuit();
 }
@@ -986,9 +1024,10 @@ function stopBig(){ clearInterval(big.int); big.running=false; big.started=false
 /* ===================== Repos ===================== */
 let rest = {int:null, left:0};
 const restbar=document.getElementById('restbar'), restnum=document.getElementById('restnum');
-function startRest(s){ clearInterval(rest.int); rest.left=s; restbar.classList.add('show'); restnum.textContent=fmt(rest.left);
-  rest.int=setInterval(()=>{ rest.left--; restnum.textContent=fmt(rest.left); if(rest.left>0 && rest.left<=5) tickBeep(); if(rest.left<=0){ clearInterval(rest.int); beep(2); setTimeout(()=>restbar.classList.remove('show'),1200); } },1000); }
-document.getElementById('restplus').onclick=()=>{ rest.left+=30; restnum.textContent=fmt(rest.left); };
+function startRest(s){ clearInterval(rest.int); rest.left=s; rest.end=Date.now()+s*1000; restbar.classList.add('show'); restnum.textContent=fmt(rest.left);
+  rest.tick=()=>{ const nl=Math.max(0,Math.ceil((rest.end-Date.now())/1000)); if(nl===rest.left) return; const prev=rest.left; rest.left=nl; restnum.textContent=fmt(nl); if(prev-nl===1 && nl>0 && nl<=5) tickBeep(); if(nl<=0){ clearInterval(rest.int); rest.tick=null; beep(2); setTimeout(()=>restbar.classList.remove('show'),1200); } };
+  rest.int=setInterval(rest.tick,400); }
+document.getElementById('restplus').onclick=()=>{ rest.left+=30; rest.end=(rest.end||Date.now())+30000; restnum.textContent=fmt(rest.left); };
 document.getElementById('reststop').onclick=()=>{ clearInterval(rest.int); restbar.classList.remove('show'); };
 function tickBeep(){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(), g=actx.createGain(); o.frequency.value=660; o.connect(g); g.connect(actx.destination); const t=actx.currentTime; g.gain.setValueAtTime(0.15,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.12); o.start(t); o.stop(t+0.12); }catch(e){} }
 let actx=null;
@@ -996,7 +1035,7 @@ function beep(n){ try{ actx=actx||new (window.AudioContext||window.webkitAudioCo
 
 /* ===================== Images d'exercices ===================== */
 function imgSrc(k){ if(state.images && state.images[k]) return '/_blob/'+state.images[k]; if(localImgs[k]) return localImgs[k]; if(repoImgs[k]) return 'images/'+repoImgs[k]; return null; }
-const YT = {goblet:'kettlebell goblet squat', pompes:'push up', swing2:'kettlebell swing two hand', gorilla:'kettlebell gorilla row', press:'kettlebell single arm overhead press', planche:'plank', rack:'kettlebell front rack squat single', clean:'kettlebell clean', pullthrough:'push up kettlebell pull through', fente:'kettlebell goblet reverse lunge', wallsit:'wall sit', stepdown:'step down exercise knee', pont:'glute bridge', mollets:'standing calf raise', mobilite:'90 90 hip stretch couch stretch pigeon', rowtable:'kettlebell bent over row two hands', renegade:'single kettlebell renegade row', curl:'kettlebell bicep curl', suitcase:'kettlebell suitcase carry', hollow:'hollow body hold', sldl:'kettlebell single leg romanian deadlift', swing1:'kettlebell one arm swing', floorpress:'kettlebell single arm floor press', pike:'pike push up', dips:'chair dips triceps', hipthrust:'single leg hip thrust couch', triceps:'kettlebell overhead triceps extension', farmer:'kettlebell farmer carry', thruster:'kettlebell thruster goblet', finisherhome:'kettlebell swing push up circuit', chestpress:'chest press machine neutral grip', machinerow:'chest supported row machine', machineshoulder:'shoulder press machine', hipthrustmachine:'hip thrust machine', latpullhooks:'lat pulldown lifting hooks', bike:'stationary bike intervals', deadbug:'dead bug exercise', legpress:'leg press', legcurl:'lying leg curl', smithhipthrust:'smith machine hip thrust', bulgare:'bulgarian split squat bodyweight', backext:'45 degree back extension', burpee:'no jump burpee', halo:'kettlebell halo', backsquat:'barbell back squat', bench:'barbell bench press', kbswing16:'kettlebell swing', barbellrow:'barbell bent over row', dbohp:'dumbbell shoulder press', hangingknee:'hanging knee raise', frontsquat:'barbell front squat', walkinglunge:'dumbbell walking lunge', pullup:'pull up', dbrow:'one arm dumbbell row', barbellcurl:'ez bar curl', farmerdb:'dumbbell farmers walk', rdl:'barbell romanian deadlift', hipthrustbar:'barbell hip thrust', inclinedb:'incline dumbbell press', lateralraise:'dumbbell lateral raise', dipsgym:'assisted dips machine', facepull:'cable face pull', tricepspush:'cable triceps pushdown', rower:'rowing machine', dbthruster:'dumbbell thruster', tgu:'turkish get up kettlebell', popup:'surf pop up exercise', pallof:'pallof press band', scappush:'scapular push up', russtwist:'russian twist kettlebell', sled:'sled push'};
+const YT = {goblet:'kettlebell goblet squat', pompes:'push up', swing2:'kettlebell swing two hand', gorilla:'kettlebell gorilla row', press:'kettlebell single arm overhead press', planche:'plank', rack:'kettlebell front rack squat single', clean:'kettlebell clean', pullthrough:'push up kettlebell pull through', fente:'kettlebell goblet reverse lunge', wallsit:'wall sit', stepdown:'step down exercise knee', pont:'glute bridge', mollets:'standing calf raise', mobilite:'90 90 hip stretch couch stretch pigeon', rowtable:'kettlebell bent over row two hands', renegade:'single kettlebell renegade row', curl:'kettlebell bicep curl', suitcase:'kettlebell suitcase carry', hollow:'hollow body hold', sldl:'kettlebell single leg romanian deadlift', swing1:'kettlebell one arm swing', floorpress:'kettlebell single arm floor press', pike:'pike push up', dips:'chair dips triceps', hipthrust:'single leg hip thrust couch', triceps:'kettlebell overhead triceps extension', farmer:'kettlebell farmer carry', thruster:'kettlebell thruster goblet', finisherhome:'kettlebell swing push up circuit', chestpress:'chest press machine neutral grip', machinerow:'chest supported row machine', machineshoulder:'shoulder press machine', hipthrustmachine:'hip thrust machine', latpullhooks:'lat pulldown lifting hooks', bike:'elliptical intervals workout', deadbug:'dead bug exercise', legpress:'leg press', legcurl:'lying leg curl', smithhipthrust:'smith machine hip thrust', bulgare:'bulgarian split squat bodyweight', backext:'45 degree back extension', burpee:'no jump burpee', halo:'kettlebell halo', backsquat:'barbell back squat', bench:'barbell bench press', kbswing16:'kettlebell swing', barbellrow:'barbell bent over row', dbohp:'dumbbell shoulder press', hangingknee:'hanging knee raise', frontsquat:'barbell front squat', walkinglunge:'dumbbell walking lunge', pullup:'pull up', dbrow:'one arm dumbbell row', barbellcurl:'ez bar curl', farmerdb:'dumbbell farmers walk', rdl:'barbell romanian deadlift', hipthrustbar:'barbell hip thrust', inclinedb:'incline dumbbell press', lateralraise:'dumbbell lateral raise', dipsgym:'assisted dips machine', facepull:'cable face pull', tricepspush:'cable triceps pushdown', rower:'rowing machine', battlerope:'battle ropes workout technique', skierg:'skierg technique', finisherhinge:'kettlebell swing intervals', dbthruster:'dumbbell thruster', tgu:'turkish get up kettlebell', popup:'surf pop up exercise', pallof:'pallof press band', scappush:'scapular push up', russtwist:'russian twist kettlebell', sled:'sled push'};
 function vidSrc(k){ if(state.videos && state.videos[k]) return '/_blob/'+state.videos[k]; if(repoVids[k]) return 'videos/'+repoVids[k]; return null; }
 function vidTag(k, cls){ const s=vidSrc(k); return s?`<video class="${cls||'gvid'}" src="${s}" autoplay loop muted playsinline preload="auto" onerror="this.remove()"></video>`:''; }
 async function saveVideo(k,file,labelEl){
@@ -1075,13 +1114,15 @@ function renderProgram(){
   <tr><td>Dimanche</td><td>Repos</td><td>–</td></tr></table></div>
   <p class="note">Priorité absolue aux trois séances principales. Une semaine avec seulement lundi, mercredi et jeudi est une semaine complète. Avec « Express 20 min », chaque séance tient en 20 minutes.</p></div>`;
   html += `<div class="card"><h3>Règles de progression</h3><ul class="plain">
-  <li>Termine toutes les séries avec 1 ou 2 reps en réserve pendant 2 séances de suite → passe à la prescription de la phase suivante sur cet exercice, même en avance.</li>
+  <li><b>Progression automatique.</b> Après chaque séance, ton retour « Facile / Ok / Difficile » modifie la consigne de la fois suivante : « Facile » ajoute 2 reps par série (10 s sur les maintiens, 10 m sur les portés), « Difficile » les retire, « Ok » ne change rien. À la salle, c'est la charge qui bouge : +2,5 kg en haut du corps, +5 kg en bas, préremplie dans le champ Charge. Jusqu'à 3 paliers (+6 reps) par phase ; au-delà, l'app te dit de passer à la variante plus dure. Le changement de phase remet les compteurs à zéro, puisque la consigne de base monte déjà.</li>
+  <li>Tu peux toujours corriger à la main : la charge dans le champ, ou en cochant « Difficile » pour redescendre d'un palier.</li>
   <li>Une rep se dégrade (dos rond, genou qui rentre) → arrête la série. La qualité prime, toujours.</li>
   <li>Après 12 semaines : lance le cycle suivant. Il repart en phase 2, ajoute une série par exercice à la maison, et à la salle la progression continue simplement par la charge. Prévois 3 cycles (9 mois) pour un changement de physique complet.</li>
+  <li>Surf : les pop-ups ouvrent le jeudi (explosif, en premier), et la mobilité des hanches et du haut du dos est dans chaque échauffement. Le focus surf du mardi complète avec le tronc et les épaules.</li>
   <li>Blessure à la main ou au doigt : le bouton « Sans grip » en haut d'une séance remplace, jusqu'à la date choisie, tous les exercices à poing fermé par des machines à coussins et du travail de jambes. Les bonus kettlebell sont mis en pause.</li>
   <li>Semaines 4 et 8 : allégées. Retire une série par exercice, garde le mardi et le samedi tranquilles.</li>
   <li>Toutes les 4 semaines (dimanche des semaines 4, 8, 12) : refais les tests dans Progrès.</li>
-  <li>Salle : charge qui laisse 2 reps en réserve sur la dernière série. Toutes les reps réussies deux séances de suite → +2,5 kg en haut du corps, +5 kg en bas. Note la charge sous l'exercice, l'app te la rappelle la fois suivante.</li>
+  <li>Salle : vise une charge qui laisse 2 reps en réserve sur la dernière série. Note la charge sous l'exercice : l'app la mémorise et la fait monter toute seule quand tu dis « Facile ».</li>
   <li>Salle, semaine 1 : apprends les barres à vide (squat, développé couché, roumain). La charge vient vite, la technique non.</li>
   <li>Quand 12 kg devient facile à la maison sur les swings à une main et le press, passe à la 16 kg de la salle pour ces mouvements.</li></ul></div>`;
   html += `<div class="card"><h3>Protéger le genou</h3><ul class="plain">
@@ -1145,7 +1186,7 @@ function renderProgress(){
   };
   app.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ state.tests.splice(+b.dataset.del,1); persist(); renderProgress(); });
   const eb=document.getElementById('exportBtn'); if(eb) eb.onclick=async()=>{ const txt=JSON.stringify(state); try{ await navigator.clipboard.writeText(txt); toast('Données copiées dans le presse-papiers'); }catch(e){ prompt('Copier mes données', txt); } };
-  const ib=document.getElementById('importBtn'); if(ib) ib.onclick=()=>{ const txt=prompt('Colle ici les données copiées depuis l\'autre version de l\'app :'); if(!txt) return; try{ const d=JSON.parse(txt); if(!d||typeof d!=='object'||!Array.isArray(d.sessions)) throw 0; const keys={}; (state.sessions||[]).forEach(s=>keys[s.key]=1); d.sessions.forEach(s=>{ if(!keys[s.key]) state.sessions.push(s); }); state.tests=[...(state.tests||[]),...(d.tests||[]).filter(t=>!(state.tests||[]).some(x=>x.week===t.week&&x.date===t.date))].sort((a,b)=>a.week-b.week); state.loads=Object.assign({},d.loads||{},state.loads||{}); state.runs=[...(state.runs||[]),...(d.runs||[]).filter(r=>!(state.runs||[]).some(x=>x.d===r.d&&x.min===r.min))]; state.loadLog=Object.assign({},d.loadLog||{},state.loadLog||{}); state.fbs=Object.assign({},d.fbs||{},state.fbs||{}); state.lastRpe=Object.assign({},d.lastRpe||{},state.lastRpe||{}); state.checks=Object.assign({},d.checks||{},state.checks||{}); if(d.start && d.start!==state.start){ if(!state.start || confirm('Les données importées ont une autre date de départ. Utiliser '+d.start+' ?')) state.start=d.start; } if(d.cycle) state.cycle=Math.max(state.cycle||1,d.cycle); persist(); toast('Données importées'); render(); }catch(e){ toast('Données illisibles'); } };
+  const ib=document.getElementById('importBtn'); if(ib) ib.onclick=()=>{ const txt=prompt('Colle ici les données copiées depuis l\'autre version de l\'app :'); if(!txt) return; try{ const d=JSON.parse(txt); if(!d||typeof d!=='object'||!Array.isArray(d.sessions)) throw 0; const keys={}; (state.sessions||[]).forEach(s=>keys[s.key]=1); d.sessions.forEach(s=>{ if(!keys[s.key]) state.sessions.push(s); }); state.tests=[...(state.tests||[]),...(d.tests||[]).filter(t=>!(state.tests||[]).some(x=>x.week===t.week&&x.date===t.date))].sort((a,b)=>a.week-b.week); state.loads=Object.assign({},d.loads||{},state.loads||{}); state.runs=[...(state.runs||[]),...(d.runs||[]).filter(r=>!(state.runs||[]).some(x=>x.d===r.d&&x.min===r.min))]; state.loadLog=Object.assign({},d.loadLog||{},state.loadLog||{}); state.fbs=Object.assign({},d.fbs||{},state.fbs||{}); state.lastRpe=Object.assign({},d.lastRpe||{},state.lastRpe||{}); state.adj=Object.assign({},d.adj||{},state.adj||{}); state.checks=Object.assign({},d.checks||{},state.checks||{}); if(d.start && d.start!==state.start){ if(!state.start || confirm('Les données importées ont une autre date de départ. Utiliser '+d.start+' ?')) state.start=d.start; } if(d.cycle) state.cycle=Math.max(state.cycle||1,d.cycle); persist(); toast('Données importées'); render(); }catch(e){ toast('Données illisibles'); } };
   const si=document.getElementById('startIn'); if(si) si.onchange=e=>{ if(e.target.value){ state.start=iso(mondayOf(new Date(e.target.value+'T00:00:00'))); persist(); render(); } };
   document.getElementById('resetAll').onclick=()=>{ if(confirm('Effacer tout l\'historique et redémarrer ?')){ state={start:null, weight:state.weight, checks:{}, sessions:[], tests:[], amrapRounds:{}, images:state.images||{}, place:state.place, loads:state.loads||{}, cycle:1}; persist(); render(); } };
 }
@@ -1214,6 +1255,10 @@ function renderFood(){
 
 /* ===================== Hors ligne ===================== */
 try{ if('serviceWorker' in navigator && location.protocol==='https:' && !/claude\.ai$|claudeusercontent|anthropic/.test(location.hostname)) navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){}
+
+/* ===================== Rattrapage au retour dans l'app ===================== */
+function catchUp(){ try{ if(guided.tick) guided.tick(); if(guided.work&&guided.work.tick) guided.work.tick(); if(guided.iv&&guided.iv.tick) guided.iv.tick(); if(run.tick) run.tick(); if(circ.tick) circ.tick(); if(rest.tick) rest.tick(); }catch(e){} }
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) catchUp(); }); window.addEventListener('focus',catchUp); window.addEventListener('pageshow',catchUp);
 
 /* ===================== Divers ===================== */
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }

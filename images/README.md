@@ -40,7 +40,7 @@ Conseil : 600 à 800 px de côté, carré, moins de 150 Ko chacune.
 | `machineshoulder` | Shoulder press machine |
 | `hipthrustmachine` | Hip thrust machine |
 | `latpullhooks` | Lat pulldown avec crochets |
-| `bike` | Vélo |
+| `bike` | Elliptique / vélo |
 | `deadbug` | Dead bug |
 | `legpress` | Leg press |
 | `legcurl` | Leg curl |
@@ -69,6 +69,16 @@ Conseil : 600 à 800 px de côté, carré, moins de 150 Ko chacune.
 | `dipsgym` | Dips (assistés si besoin) |
 | `facepull` | Face pull |
 | `tricepspush` | Cable triceps pushdown |
-| `rower` | Finisher : rameur, 30 s fort / 30 s facile |
-| `dbthruster` | Thruster haltères |
+| `rower` | Rameur |
+| `dbthruster` | Dumbbell thruster |
+| `tgu` | Turkish get-up |
+| `popup` | Pop-ups |
+| `pallof` | Pallof press |
+| `scappush` | Scapular push-ups + Y-T-W |
+| `russtwist` | Russian twist |
 | `sled` | Sled push |
+| `battlerope` | Battle ropes |
+| `skierg` | SkiErg |
+| `finisherhinge` | Finisher swings 20/40 |
+| `woodchop` | Cable woodchop |
+| `mbrot` | Medicine ball rotational throw |
