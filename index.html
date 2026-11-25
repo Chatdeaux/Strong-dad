@@ -669,7 +669,7 @@ function renderToday(){
   const checks = state.checks[sessionKey(w,day.id)] || [];
   if(day.kind==='sets' || day.kind==='recovery'){
     if(day.kind==='recovery'){
-      html += `<div class="card"><h3>Course</h3><p>${esc(expressOn()?day.runExpress:day.run[ph])}</p><p class="note">Sur du plat, chaussures amorties, foulée courte. Le vélo ou le rameur remplacent très bien la course si le genou n'est pas prêt.${gymOn()?' À la salle : 20 à 25 min de vélo ou de rameur à intensité modérée, ou tapis incliné en marche rapide, puis le circuit genou ci-dessous.':''}</p>${runDone(w,day.id)?'<p class="pill ok">course enregistrée ✓</p>':`<button class="btn" id="runGo" style="width:100%;margin-top:6px">Go · course</button>`}</div>`;
+      html += `<div class="card"><h3>Course</h3><p>${esc(expressOn()?day.runExpress:day.run[ph])}</p><p class="note">Sur du plat, chaussures amorties, foulée courte. Le vélo ou le rameur remplacent très bien la course si le genou n'est pas prêt.${gymOn()?' À la salle : 20 à 25 min de vélo ou de rameur à intensité modérée, ou tapis incliné en marche rapide, puis le circuit genou ci-dessous.':''}</p>${runDone(w,day.id)?'<p class="pill ok">course enregistrée ✓</p>':`<button class="btn" id="runGo" style="width:100%;margin-top:6px">Go · course</button><button class="btn ghost small" id="runManual" style="width:100%;margin-top:8px">Saisir une course faite sans l'app</button>`}</div>`;
       if(run.done && !runDone(w,day.id)) html += runRecap(day, w);
     }
     const deload = (w===4||w===8);
@@ -733,11 +733,12 @@ function renderToday(){
   big.day=day; big.ph=ph; bindBig(); bindImages(app); bindGuided(); bindPlace(app);
   try{ const row=app.querySelector('.chips.days'); const sel=row&&(row.querySelector('[aria-pressed="true"]')||row.querySelector('[data-today]')); if(row&&sel&&row.scrollWidth>row.clientWidth){ row.scrollLeft=Math.max(0, sel.offsetLeft-row.clientWidth/2+sel.offsetWidth/2); } }catch(e){}
   const rg=document.getElementById('runGo'); if(rg) rg.onclick=()=>showPrep(day, ph, w, ()=>runStart(day, ph, w));
-  const rs=document.getElementById('runSave'); if(rs) rs.onclick=()=>{ const km=parseFloat(document.getElementById('runKm').value)||null; const bpm=parseInt(document.getElementById('runBpm').value)||null; const knee=+document.getElementById('runKnee').value; const note=document.getElementById('runNote').value.trim(); const mins=Math.round(run.elapsed/60*10)/10;
+  const rm=document.getElementById('runManual'); if(rm) rm.onclick=()=>{ run.manual=true; run.done=true; run.elapsed=0; run.planMin=(day.runMin||[25,30,35])[ph]; renderToday(); setTimeout(()=>{ const c=document.querySelector('.recap'); if(c) c.scrollIntoView({behavior:'smooth',block:'start'}); },50); };
+  const rs=document.getElementById('runSave'); if(rs) rs.onclick=()=>{ const km=parseFloat(document.getElementById('runKm').value)||null; const bpm=parseInt(document.getElementById('runBpm').value)||null; const knee=+document.getElementById('runKnee').value; const note=document.getElementById('runNote').value.trim(); const mEl=document.getElementById('runMin'); const mins=run.manual? (parseFloat(mEl&&mEl.value)||0) : Math.round(run.elapsed/60*10)/10; if(run.manual && !mins){ toast('Indique la durée'); mEl&&mEl.focus(); return; } const dEl=document.getElementById('runDate'); const rDate=(run.manual && dEl && dEl.value)? dEl.value : iso(new Date());
     const ex0=sessOf(w,day.id); if(ex0){ state.sessions=state.sessions.filter(s=>s!==ex0); }
-    state.sessions.push(Object.assign({}, ex0||{}, {key:sessionKey(w,day.id), week:w, day:day.id, date:iso(new Date()), rpe:knee, note:note||(ex0&&ex0.note)||'', dur:Math.round(mins)+((ex0&&ex0.dur)||0), run:{min:mins, km, bpm, knee}, score: km? Math.round(km*100)/100 : mins, place:'home'}));
-    state.runs=state.runs||[]; state.runs.push({d:iso(new Date()), w, min:mins, km, bpm, knee}); run.done=false; persist(); toast('Course enregistrée'); renderToday(); };
-  const rd=document.getElementById('runDiscard'); if(rd) rd.onclick=()=>{ if(confirm('Abandonner cette course ?')){ run.done=false; renderToday(); } };
+    state.sessions.push(Object.assign({}, ex0||{}, {key:sessionKey(w,day.id), week:w, day:day.id, date:rDate, rpe:knee, note:note||(ex0&&ex0.note)||'', dur:Math.round(mins)+((ex0&&ex0.dur)||0), run:{min:mins, km, bpm, knee}, score: km? Math.round(km*100)/100 : mins, place:'home'}));
+    state.runs=state.runs||[]; state.runs.push({d:rDate, w, min:mins, km, bpm, knee, manual:!!run.manual}); run.done=false; run.manual=false; persist(); toast('Course enregistrée'); renderToday(); };
+  const rd=document.getElementById('runDiscard'); if(rd) rd.onclick=()=>{ if(confirm('Abandonner cette course ?')){ run.done=false; run.manual=false; renderToday(); } };
   const gb=document.getElementById('goBtn'); if(gb) gb.onclick=()=>showPrep(day, ph, w, ()=>startGuided(day, ph, w, dIdx));
 }
 
@@ -808,7 +809,7 @@ function buildSeq(day, ph, w){
   activeBlocks(day,ph,w).forEach(({b0,i})=>{ const b=bx(b0); const n=setsFor(b,ph,w,day); const restSecs=restFor(day,ph,b); for(let s=1;s<=n;s++){ seq.push({t:'work',i,s,n}); seq.push({t:'rest',i,s,n,secs:restSecs}); } });
   seq.pop(); return seq;
 }
-function startGuided(day, ph, w, dIdx){
+function startGuided(day, ph, w, dIdx){ setTimeout(keepAwake,0);
   guided={iv:{running:false,phase:'',left:0,round:0,rounds:0,int:null}, active:true, finished:false, week:w, day:dIdx, seq:buildSeq(day,ph,w), pos:0, restLeft:0, int:null, wake:null, done:new Set(), startedAt:Date.now(), endedAt:0, work:{left:0,int:null,running:false}, fb:{}, elapsedInt:null};
   try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').then(l=>guided.wake=l).catch(()=>{}); }catch(e){}
   guided.elapsedInt=setInterval(()=>{ const el=document.getElementById('gfElapsed'); if(el) el.textContent=fmt((Date.now()-guided.startedAt)/1000); },1000);
@@ -816,7 +817,7 @@ function startGuided(day, ph, w, dIdx){
 }
 function clearGuidedTimers(){ try{ const g=document.getElementById('gf'); g.classList.remove('ivon','ivoff'); }catch(e){} clearInterval(guided.int); clearInterval(guided.work.int); guided.work.running=false; if(guided.iv){ clearInterval(guided.iv.int); guided.iv.running=false; guided.iv.phase=''; } }
 function closeGf(){ document.getElementById('gf').classList.remove('show'); document.body.classList.remove('locked'); document.body.style.top=''; try{ window.scrollTo(0,guided.scrollY||0); }catch(e){} clearInterval(guided.elapsedInt); try{ speechSynthesis.cancel(); }catch(e){} }
-function stopGuided(){ clearGuidedTimers(); closeGf(); if(guided.wake){ try{guided.wake.release();}catch(e){} } guided.active=false; guided.finished=false; }
+function stopGuided(){ setTimeout(keepAwake,50); clearGuidedTimers(); closeGf(); if(guided.wake){ try{guided.wake.release();}catch(e){} } guided.active=false; guided.finished=false; }
 function markCheck(i,val){ const day=DAYS[guided.day]; const k=sessionKey(guided.week,day.id); const arr=state.checks[k]||[]; arr[i]=val; state.checks[k]=arr; persist(); }
 function say(text){ if(state.voice===false) return; try{ if(!window.speechSynthesis) return; const u=new SpeechSynthesisUtterance(text); u.lang='fr-FR'; u.rate=1.05; speechSynthesis.cancel(); speechSynthesis.speak(u); }catch(e){} }
 function countdownCue(left){ if(state.voice!==false){ if(left===3) say('3'); else if(left===2) say('2'); else if(left===1) say('1'); } else if(left>0 && left<=5) tickBeep(); }
@@ -874,7 +875,7 @@ function startWorkTimer(secs){
   guided.work.int=setInterval(guided.work.tick,400);
   const btn=document.getElementById('gTimerStart'); if(btn){ btn.textContent='En cours…'; btn.disabled=true; }
 }
-function finishGuided(){ clearGuidedTimers(); guided.finished=true; guided.endedAt=Date.now(); beep(3); closeGf(); if(guided.wake){ try{guided.wake.release();}catch(e){} } renderToday(); }
+function finishGuided(){ setTimeout(keepAwake,50); clearGuidedTimers(); guided.finished=true; guided.endedAt=Date.now(); beep(3); closeGf(); if(guided.wake){ try{guided.wake.release();}catch(e){} } renderToday(); }
 function curFb(i){ if(guided.active||guided.finished) return guided.fb[i]||''; const k=sessionKey(view.week??currentWeek(), DAYS[view.day??todayIdx()].id); return ((state.fbs||{})[k]||{})[i]||''; }
 function setFb(i,v){
   if(guided.active||guided.finished){ guided.fb[i] = (guided.fb[i]===v) ? '' : v; return; }
@@ -953,7 +954,7 @@ document.getElementById('gfVoice').onclick=()=>{ state.voice = state.voice===fal
 let run={active:false, done:false, running:false, elapsed:0, int:null, planMin:0, wake:null, week:null};
 const runf=document.getElementById('runf');
 function runDraw(){ const t=document.getElementById('rTimer'); t.textContent=fmt(run.elapsed); t.classList.toggle('paused', run.active && !run.running); t.classList.toggle('over', run.planMin>0 && run.elapsed>=run.planMin*60); document.getElementById('rPause').textContent = run.running?'Pause':'Reprendre'; }
-function runStart(day, ph, w){
+function runStart(day, ph, w){ setTimeout(keepAwake,0);
   run={active:true, done:false, running:true, elapsed:0, int:null, planMin:(expressOn()?10:day.runMin[ph]), wake:null, week:w};
   document.getElementById('rPlan').textContent=run.planMin+' min'; document.getElementById('rHint').textContent='Dépasse si tu veux : le chrono continue, seul le planning est indicatif.';
   document.getElementById('rList').innerHTML=`<li>${esc(expressOn()?day.runExpress:day.run[ph])}</li><li>Genou : douleur ≥ 3/10 → marche. Foulée courte, terrain plat.</li>`;
@@ -967,8 +968,8 @@ document.getElementById('rPause').onclick=()=>{ if(run.running){ run.acc=run.ela
 document.getElementById('rQuit').onclick=()=>{ if(run.elapsed<60 && !confirm('Terminer déjà ? Rien ne sera enregistré.')) return; clearInterval(run.int); run.running=false; run.active=false; run.done=run.elapsed>=60; runf.classList.remove('show'); if(run.wake){ try{run.wake.release();}catch(e){} } renderToday(); };
 function runRecap(day, w){
   const mins=Math.round(run.elapsed/60);
-  return `<div class="card recap"><h3 class="display" style="font-size:30px">Course terminée</h3><div class="pills"><span class="pill">${fmt(run.elapsed)}</span><span class="pill">prévu ${run.planMin} min</span></div>
-  <div class="stack" style="margin-top:12px"><div class="two"><label class="field"><span>Distance (km)</span><input type="number" id="runKm" step="0.01" inputmode="decimal" placeholder="ex. 4.2"></label><label class="field"><span>BPM moyen (montre)</span><input type="number" id="runBpm" inputmode="numeric" placeholder="ex. 148"></label></div>
+  return `<div class="card recap"><h3 class="display" style="font-size:30px">${run.manual?'Course à saisir':'Course terminée'}</h3><div class="pills">${run.manual?'':`<span class="pill">${fmt(run.elapsed)}</span>`}<span class="pill">prévu ${run.planMin} min</span></div>
+  <div class="stack" style="margin-top:12px">${run.manual?`<div class="two"><label class="field"><span>Date</span><input type="date" id="runDate" value="${iso(new Date())}"></label><label class="field"><span>Durée (min)</span><input type="number" id="runMin" inputmode="decimal" step="1" placeholder="ex. 25"></label></div>`:''}<div class="two"><label class="field"><span>Distance (km)</span><input type="number" id="runKm" step="0.01" inputmode="decimal" placeholder="ex. 4.2"></label><label class="field"><span>BPM moyen (montre)</span><input type="number" id="runBpm" inputmode="numeric" placeholder="ex. 148"></label></div>
   <label class="field"><span>Genou pendant / après (1 rien – 10 très douloureux)</span><input type="range" min="1" max="10" value="1" id="runKnee" style="padding:0"></label>
   <label class="field"><span>Note</span><input type="text" id="runNote" placeholder="ex. 3 × 8 min facile, genou ok"></label>
   <button class="btn" id="runSave">Enregistrer la course</button><button class="btn ghost small" id="runDiscard">Abandonner</button></div></div>`;
@@ -978,7 +979,7 @@ function runRecap(day, w){
 let circ={active:false, kind:'', items:[], keys:[], idx:0, round:1, rounds:0, secs:0, left:0, elapsed:0, int:null, resting:false, restLeft:0, day:null, ph:0, w:0, cap:0};
 function parseItem(txt){ const m=/^(\d+(?:[.,]\d+)?)\s*(m|s|min)?\b\s*(?:de |d['’]|of )?(.*)$/.exec(txt.trim()); if(!m) return {num:'', unit:'', name:txt}; return {num:m[1], unit:m[2]||'', name:m[3]}; }
 function amrapSet(day,ph){ if(noGripOn() && day.roundsNG) return {list:day.roundsNG[ph], k:day.rkNG[ph], note:day.noteNG||day.note, tag:'ng'}; if(gymOn() && day.roundsG) return {list:day.roundsG[ph], k:day.rkG[ph], note:day.noteG||day.note, tag:'g'}; return {list:day.rounds[ph], k:day.rk[ph], note:day.note, tag:''}; }
-function startCircuit(day, ph, w, opts){ const o=opts||{};
+function startCircuit(day, ph, w, opts){ const o=opts||{}; setTimeout(keepAwake,0);
   let items, keys, rounds, secs=0, cap=0;
   if(day.kind==='amrap'){ const as=amrapSet(day,ph); items=as.list; keys=as.k; rounds=Infinity; secs=(expressOn()?Math.min(day.minutes[ph],15):day.minutes[ph])*60; }
   else { const r0=(gymOn()&&day.groundsG)?day.groundsG[ph]:day.rounds[ph]; items=r0.list; keys=r0.k||[]; rounds=expressOn()?Math.min(r0.r,3):r0.r; cap=(expressOn()?Math.min(day.cap[ph],17):day.cap[ph])*60; }
@@ -1043,7 +1044,7 @@ function circPrev(){
   circ.idx--; if(circ.idx<0){ if(circ.round>1){ circ.round--; circ.idx=circ.items.length-1; } else circ.idx=0; }
   drawCircuit();
 }
-function finishCircuit(complete){
+function finishCircuit(complete){ setTimeout(keepAwake,50);
   clearInterval(circ.int); circ.active=false;
   const doneRounds = complete && isFinite(circ.rounds) ? circ.rounds : (circ.round-1);
   big.started=true; big.rounds=doneRounds; big.elapsed=circ.elapsed; big.secs=circ.secs; big.remaining=circ.left; big.countdown=(circ.kind==='amrap'); big.complete=!!complete;
@@ -1350,8 +1351,8 @@ function hiitStart(){ if(hiit.running) return; hiit.running=true; hiit.startAt=D
     hiitDraw(); };
   hiit.int=setInterval(hiit.tick,400); hiitDraw(); }
 function hiitPause(){ if(!hiit.running) return; hiit.running=false; hiit.acc=hiit.elapsed; clearInterval(hiit.int); hiit.tick=null; hiitDraw(); }
-function hiitOpen(){ const p=hiitPrefs(); hiit={running:false, startAt:0, acc:0, elapsed:0, round:p.round, on:p.on, off:p.off, phase:'on', phaseLeft:p.on, roundN:1, int:null, tick:null, wake:null, open:true}; document.getElementById('hiitf').classList.add('show'); try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').then(l=>hiit.wake=l).catch(()=>{}); }catch(e){} hiitDraw(); hiitStart(); }
-function hiitClose(){ hiitPause(); hiit.open=false; document.getElementById('hiitf').classList.remove('show','on','off'); if(hiit.wake){ try{hiit.wake.release();}catch(e){} hiit.wake=null; } try{ speechSynthesis.cancel(); }catch(e){} }
+function hiitOpen(){ setTimeout(keepAwake,0); const p=hiitPrefs(); hiit={running:false, startAt:0, acc:0, elapsed:0, round:p.round, on:p.on, off:p.off, phase:'on', phaseLeft:p.on, roundN:1, int:null, tick:null, wake:null, open:true}; document.getElementById('hiitf').classList.add('show'); try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').then(l=>hiit.wake=l).catch(()=>{}); }catch(e){} hiitDraw(); hiitStart(); }
+function hiitClose(){ setTimeout(keepAwake,50); hiitPause(); hiit.open=false; document.getElementById('hiitf').classList.remove('show','on','off'); if(hiit.wake){ try{hiit.wake.release();}catch(e){} hiit.wake=null; } try{ speechSynthesis.cancel(); }catch(e){} }
 document.getElementById('hPause').onclick=()=>{ if(hiit.running) hiitPause(); else hiitStart(); };
 document.getElementById('hStop').onclick=()=>{ hiitPause(); const e=hiit.elapsed; hiitClose(); if(e<30){ view.tab='chrono'; render(); return; } hiit.pending={secs:e, rounds:Math.max(1,Math.ceil(e/hiit.round)), round:hiit.round, on:hiit.on, off:hiit.off}; view.tab='chrono'; beep(3); say('Terminé'); render(); };
 function renderChrono(){
@@ -1377,6 +1378,14 @@ function renderChrono(){
     persist(); hiit.pending=null; toast('Séance cardio enregistrée'); renderChrono(); };
   const hd=document.getElementById('hDiscard'); if(hd) hd.onclick=()=>{ hiit.pending=null; renderChrono(); };
 }
+/* ===================== Écran allumé ===================== */
+let wakeL=null, wakeWanted=false;
+function anyActive(){ return !!(guided.active || circ.active || (typeof hiit!=='undefined' && hiit.open) || (typeof run!=='undefined' && run.active) || big.running); }
+async function keepAwake(){ try{ wakeWanted=anyActive(); if(!('wakeLock' in navigator)) return; if(!wakeWanted){ if(wakeL){ const l=wakeL; wakeL=null; await l.release().catch(()=>{}); } return; } if(wakeL && !wakeL.released) return; if(document.visibilityState!=='visible') return; const l=await navigator.wakeLock.request('screen'); wakeL=l; l.addEventListener('release',()=>{ if(wakeL===l) wakeL=null; if(wakeWanted && document.visibilityState==='visible') setTimeout(keepAwake,500); }); }catch(e){ wakeL=null; } }
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) setTimeout(keepAwake,100); });
+window.addEventListener('pageshow',()=>setTimeout(keepAwake,100));
+document.addEventListener('touchstart',()=>{ if(wakeWanted && !wakeL) keepAwake(); },{passive:true});
+setInterval(()=>{ if(anyActive()!==wakeWanted || (wakeWanted && !wakeL)) keepAwake(); },5000);
 function catchUp(){ try{ if(guided.tick) guided.tick(); if(guided.work&&guided.work.tick) guided.work.tick(); if(guided.iv&&guided.iv.tick) guided.iv.tick(); if(run.tick) run.tick(); if(circ.tick) circ.tick(); if(rest.tick) rest.tick(); if(hiit.tick) hiit.tick(); }catch(e){} }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) catchUp(); }); window.addEventListener('focus',catchUp); window.addEventListener('pageshow',catchUp);
 
