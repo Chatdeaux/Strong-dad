@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Strong Dad - Programme personnalisé</title>
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0D2A6B">
@@ -387,9 +387,11 @@ body.locked{position:fixed;left:0;right:0;overflow:hidden}
 .gf .alttags{justify-content:center}
 .gf .altfocus{max-width:40ch;margin:8px auto 0}
 /* ===== App shell : la page ne défile plus, seul #app défile. La barre du bas ne peut plus flotter. ===== */
-html,body{height:100%;overflow:hidden}
+html{height:100%;height:100dvh;overflow:hidden}
+body{height:100%;overflow:hidden}
+:root{padding-bottom:0}
 html{overscroll-behavior:none}
-body{display:flex;flex-direction:column;min-height:0;height:100dvh;padding-bottom:0;position:static}
+body{display:flex;flex-direction:column;min-height:0;height:100%;max-height:100%;padding-bottom:0;position:static}
 body.locked{position:static}
 main#app{flex:1 1 auto;min-height:0;width:100%;max-width:none;margin:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:30px max(16px, calc((100% - 640px)/2 + 16px), env(safe-area-inset-left,0px)) 28px max(16px, calc((100% - 640px)/2 + 16px), env(safe-area-inset-left,0px))}
 .tabs{position:static;flex:0 0 auto;transform:none;will-change:auto;padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
